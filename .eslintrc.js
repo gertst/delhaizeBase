@@ -19,6 +19,7 @@ module.exports = {
   'rules': {
   	"indent": 0,
 	  "no-tabs": 0,
+      "new-cap": 0,
       "key-spacing": 0,
       "eol-last": 0,
       "spaced-comment": 0,

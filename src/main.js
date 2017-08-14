@@ -19,8 +19,8 @@ Vue.config.productionTip = false;
 new Vue({
 	el: '#app',
 	firebase: {
-		orders: firebase.database.ref('orders'),
-		orderLines: firebase.database.ref('orderLines'),
+		//orders: firebase.database.ref('orders'),
+		//orderLines: firebase.database.ref('orderLines'),
 		users: firebase.database.ref('users')
 	},
 	router,
@@ -30,7 +30,7 @@ new Vue({
 	},
 	mounted() {
 		Vue.nextTick(() => {
-			console.log("firebase:", firebase);
+			//console.log("firebase:", firebase);
 			firebase.api.auth().onAuthStateChanged((user) => {
 				if (user) {
 					this.$router.push('/');
