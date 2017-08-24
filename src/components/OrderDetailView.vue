@@ -60,14 +60,15 @@
 				action:"edit",
 				currentItem: {},
 				currentOrder: null,
-				orderLines: []
+				orderLines: [],
+				orderKey: null
 			}
 		},
 		mounted() {
 			this.$bindAsArray("orders", firebase.database.ref('orders').limitToLast(1), null, (e) => {
 				this.currentOrder = this.orders[0];
-				const key = this.orders[0][".key"];
-				this.$bindAsArray("orderLines", firebase.database.ref('orderLines').orderByChild("orderId").equalTo(key), null, (e) => {
+				this.orderKey = this.orders[0][".key"];
+				this.$bindAsArray("orderLines", firebase.database.ref('orderLines/' + this.orderKey), (e) => {
 					console.log("orders loaded");
 				});
 			});
@@ -78,9 +79,8 @@
 			addOrEditOrderLine() {
 				this.showAddOrderPanel = false;
 				if (this.action === 'add') {
-					this.$firebaseRefs.orderLines.push(
+					firebase.database.ref("orderLines/" + this.orderKey).push(
 						{
-							"orderId": this.currentOrder[".key"],
 							"department": this.currentItem.department,
 							"id": "",
 							"name": this.currentItem.name,

@@ -4,13 +4,17 @@
 			<div class="mdl-layout__header-row">
 				<div class="mdl-layout-spacer"></div>
 				<nav class="mdl-navigation ">
-					<router-link to="/order">Go to Foo</router-link>
-					<a class="mdl-navigation__link" href="/order">
+					<!--<router-link to="/order">Go to Foo</router-link>-->
+					<a class="mdl-navigation__link" href="#order">
 						<i class="material-icons">today</i>
-						<span>vr 26 jun</span>
+						<span>Today</span>
 					</a>
-					<a class="mdl-navigation__link" href="">
-						<i class="material-icons">account_circle</i>
+					<a class="mdl-navigation__link" href="#">
+						<i class="material-icons">list</i>
+						<span>Groceries</span>
+					</a>
+					<a class="mdl-navigation__link" href="#">
+						<i class="material-icons">shopping_cart</i>
 						<span>{{displayName}}</span>
 						<i class="material-icons">more_vert</i>
 					</a>
@@ -22,10 +26,10 @@
 		</header>
 
 		<div class="mdl-layout__drawer">
-			<span class="mdl-layout-title">Simple Layout</span>
+			<span class="mdl-layout-title">DelhaizeBase</span>
 			<nav class="mdl-navigation">
 				<router-link class="mdl-navigation__link" to="/profile" @click.native="hideMenu()">User Profile</router-link>
-				<router-link class="mdl-navigation__link" to="/" @click.native="logOut();hideMenu();">Log Out</router-link>
+				<router-link class="mdl-navigation__link" to="/" @click.native="logOut();hideMenu();">Log Out {{displayName}}</router-link>
 			</nav>
 
 		</div>

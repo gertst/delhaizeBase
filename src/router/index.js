@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import OrderDetailView from '../components/OrderDetailView'
-import OrderSelectView from '../components/OrderSelectView'
+import OrderView from '../components/OrderView'
 import LoginView from '../components/LoginView.vue'
 import UserProfile from '../components/UserProfile.vue'
 
@@ -18,7 +18,7 @@ export default new Router({
 		{
 			path: '/order',
 			name: 'order',
-			component: OrderSelectView
+			component: OrderView
 		},
 		{
 			path: '/login',
