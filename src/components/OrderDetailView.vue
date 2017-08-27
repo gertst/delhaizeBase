@@ -2,7 +2,7 @@
 	<div>
 		<div class="list-action mdl-list">
 
-			<div @click="showEditPanel('edit', orderline)" v-for="orderline in orderLines" class="mdl-list__item">
+			<div @click="showEditPanel('edit', orderline)" v-for="orderline in $root.currentOrderLines" class="mdl-list__item">
 	            <span class="mdl-list__item-primary-content">
 		             <i class="material-icons mdl-list__item-avatar">person</i>
 		             <span>{{orderline.department}}: {{orderline.qty}} x {{orderline.name}}</span>
@@ -42,7 +42,6 @@
 </template>
 
 <script>
-	import firebase from '../service/firebase'
 
 	export default {
 
@@ -57,21 +56,12 @@
 					name: "",
 					qty: 1
 				},
-				action:"edit",
-				currentItem: {},
-				currentOrder: null,
-				orderLines: [],
-				orderKey: null
+				action: "edit",
+				currentItem: {}
 			}
 		},
 		mounted() {
-			this.$bindAsArray("orders", firebase.database.ref('orders').limitToLast(1), null, (e) => {
-				this.currentOrder = this.orders[0];
-				this.orderKey = this.orders[0][".key"];
-				this.$bindAsArray("orderLines", firebase.database.ref('orderLines/' + this.orderKey), (e) => {
-					console.log("orders loaded");
-				});
-			});
+
 
 
 		},
@@ -79,7 +69,7 @@
 			addOrEditOrderLine() {
 				this.showAddOrderPanel = false;
 				if (this.action === 'add') {
-					firebase.database.ref("orderLines/" + this.orderKey).push(
+					this.$root.firebase.database().ref("orderLines/" + this.$root.currentOrder[".key"]).push(
 						{
 							"department": this.currentItem.department,
 							"id": "",
@@ -93,7 +83,7 @@
 					const key = this.currentItem['.key'];
 					// remove the .key attribute
 					delete this.currentItem['.key'];
-					firebase.database.ref('orderLines/' + key).update(this.currentItem);
+					this.$root.firebase.database().ref('orderLines/' + this.$root.currentOrder[".key"] + "/" + key).update(this.currentItem);
 
 				}
 

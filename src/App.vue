@@ -1,117 +1,149 @@
 <template>
-	<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-		<header class="mdl-layout__header">
-			<div class="mdl-layout__header-row">
-				<div class="mdl-layout-spacer"></div>
-				<nav class="mdl-navigation ">
-					<!--<router-link to="/order">Go to Foo</router-link>-->
-					<a class="mdl-navigation__link" href="#order">
-						<i class="material-icons">today</i>
-						<span>Today</span>
-					</a>
-					<a class="mdl-navigation__link" href="#">
-						<i class="material-icons">list</i>
-						<span>Groceries</span>
-					</a>
-					<a class="mdl-navigation__link" href="#">
-						<i class="material-icons">shopping_cart</i>
-						<span>{{displayName}}</span>
-						<i class="material-icons">more_vert</i>
-					</a>
+	<div class="app-viewport" id="file-list">
+		<sideBar></sideBar>
 
+		<md-whiteframe md-elevation="3" class="main-toolbar">
+			<md-toolbar>
+				<div class="md-toolbar-container">
+					<md-button class="md-icon-button" @click="$root.$emit('sideBarToggle')">
+						<md-icon>menu</md-icon>
+					</md-button>
 
+					<h2 class="md-title">DelhaizeBase</h2>
 
-				</nav>
-			</div>
-		</header>
+					<span style="flex: 1"></span>
 
-		<div class="mdl-layout__drawer">
-			<span class="mdl-layout-title">DelhaizeBase</span>
-			<nav class="mdl-navigation">
-				<router-link class="mdl-navigation__link" to="/profile" @click.native="hideMenu()">User Profile</router-link>
-				<router-link class="mdl-navigation__link" to="/" @click.native="logOut();hideMenu();">Log Out {{displayName}}</router-link>
-			</nav>
+					<md-button class="md-icon-button">
+						<md-icon>search</md-icon>
+					</md-button>
 
-		</div>
+					<md-button class="md-icon-button">
+						<md-icon>view_module</md-icon>
+					</md-button>
+				</div>
+			</md-toolbar>
+		</md-whiteframe>
 
-		<main class="mdl-layout__content">
-			<div class="page-content">
-				<router-view></router-view>
-			</div>
+		<main class="main-content">
+			<!--<md-stepper>
+				<md-step md-button-continue="To the shop">
+
+				</md-step>
+				<md-step>
+					<p>This seems something I need to focus on just after the first step.</p>
+				</md-step>
+				<md-step>
+					<p>This seems something important I need to fix just right before the last step.</p>
+				</md-step>
+			</md-stepper>-->
+
+			<groceriesView v-if="$root.user.email"></groceriesView>
+			<loginView v-if="!$root.user.email"></loginView>
+
 		</main>
 	</div>
+
 </template>
 
 <script>
-	require('material-design-lite');
+	import Vue from "vue"
+	import VueMaterial from 'vue-material'
+	import SideBar from "./components/SideBar.vue"
+	import LoginView from './components/LoginView.vue'
+	import GroceriesView from './components/GroceriesView.vue'
 
-	import firebase from './service/firebase'
-
+	Vue.use(VueMaterial)
 
 	export default {
 		name: 'app',
 
+		components: {
+			SideBar,
+			LoginView,
+			GroceriesView
+		},
+
 		data() {
 			return {
-				user: {}
+
 			}
 		},
 
 
 		computed: {
-			displayName() {
-				let v = "Unknown";
-				if (this.user && this.user.displayName) {
-					v = this.user.displayName.split(" ")[0];
-				}
-				return v
-			}
+
 		},
 
 		methods: {
-			hideMenu: function () {
-				document.getElementsByClassName('mdl-layout__drawer')[0].classList.remove('is-visible')
-				document.getElementsByClassName('mdl-layout__obfuscator')[0].classList.remove('is-visible')
-			},
 
 			logOut() {
-				firebase.api.auth().signOut();
+				this.$root.firebase.auth().signOut();
+				//user = {};
 			}
 		},
 
-		created() {
+		mounted() {
 
 
-			firebase.api.auth().onAuthStateChanged((user) => {
+			this.$root.firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
-//					console.log("user:", user);
-					this.user = user;
-
+					this.$root.user = user;
 				} else {
-					this.$router.push('/login')
+
 				}
 			});
 
-			this.$router.beforeEach((to, from_, next) => {
-				if(to.path !== '/login') {
-					if(!this.user || !this.user.email) {
-						//logger('There is no token, redirect to login. (' + to.path + ')');
-						next('login');
-					} else {
-						//logger('There is a token, resume. (' + to.path + ')');
-						next();
-					}
-				} else {
-					//logger('You\'re on the login page');
-					next(); // This is where it should have been
-				}
-				// next(); - This is in the wrong place
-			})
+
 		}
 	}
 </script>
 
 <style>
-	@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-	@import url('https://code.getmdl.io/1.3.0/material.deep_orange-orange.min.css');
+	html,
+	body,
+	.app-viewport {
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.app-viewport {
+		display: flex;
+		flex-flow: column;
+	}
+
+	.main-toolbar {
+		position: relative;
+		z-index: 10;
+	}
+
+	.md-title {
+		padding-left: 8px;
+		color: #fff;
+	}
+
+	.main-content {
+		position: relative;
+		z-index: 1;
+		overflow: auto;
+	}
+
+	.md-list-action {
+		color: rgba(0, 0, 0, 0.26);
+	}
+
+	.md-avatar-icon {
+		color: #fff !important;
+	}
+
+	.md-sidenav .md-list-text-container > :nth-child(2) {
+		color: rgba(255, 255, 255, 0.54);
+	}
+
+	.md-account-header .md-list-item:hover {
+		background-color: inherit;
+	}
+	.md-account-header .md-avatar-list .md-list-item-container:hover {
+		background: none !important;
+	}
+
 </style>

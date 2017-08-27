@@ -27,16 +27,17 @@
 
     <!--use firebase gui layout for user login-->
     <link type="text/css" rel="stylesheet" href="static/css/firebaseui.css" />
-
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/vue-material@0.7.4/dist/vue-material.css" />
   </head>
   <body>
     <noscript>
       Make sure Javascript is enabled!
     </noscript>
+    <script src="https://unpkg.com/vue-material@0.7.4"></script>
     <div id="app"></div>
-    <script defer src="//code.getmdl.io/1.3.0/material.min.js"></script>
     <!-- Todo: only include in production -->
     <%= htmlWebpackPlugin.options.serviceWorkerLoader %>
     <!-- built files will be auto injected -->
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
   </body>
 </html>

@@ -19,7 +19,6 @@
 </template>
 
 <script>
-	import firebase from '../service/firebase';
 	import moment from "moment";
 	import myDatepicker from 'vue-datepicker/vue-datepicker-es6.vue'
 
@@ -58,7 +57,7 @@
 					},
 					overlayOpacity: 0.5, // 0.5 as default
 					dismissible: true // as true as default
-				},
+				}/*,
 
 				limit: [
 
@@ -67,7 +66,7 @@
 						from: '2017-08-22',
 						to: '2018-02-20'
 					}
-				]
+				]*/
 
 
 			}
@@ -78,9 +77,8 @@
 
 		methods: {
 			addOrder() {
-				let ordersRef = firebase.database.ref("orders").push();
+				let ordersRef = this.$root.firebase.database().ref("orders").push();
 				let key = ordersRef.key;
-				console.log("date:", this.orderDate, "key:", key);
 				ordersRef.set({
 					createdAt: this.orderDate.time,
 					paidBy: "Gert (WIP)"

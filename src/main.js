@@ -2,43 +2,56 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
 import Vuefire from 'vuefire'
-import firebase from './service/firebase'
-import VueMdl from 'vue-mdl'
+//import firebase from './service/firebase'
+import firebase from "firebase";
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
 
 Vue.use(Vuefire);
-Vue.use(VueMdl);
 Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false;
 
 new Vue({
 	el: '#app',
-	firebase: {
-		//orders: firebase.database.ref('orders'),
-		//orderLines: firebase.database.ref('orderLines'),
-		users: firebase.database.ref('users')
-	},
-	router,
+	name: 'root',
 	template: '<App/>',
 	components: {
 		App
 	},
+	data: {
+		firebase: null,
+		orders: null,
+		currentOrder: null,
+		currentOrderLines: null,
+		user:{}
+	},
+	created() {
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyASNCM4kaDnEphyZmmoQnqsKpjheafLSA0",
+			authDomain: "delhaizebase.firebaseapp.com",
+			databaseURL: "https://delhaizebase.firebaseio.com",
+			projectId: "delhaizebase",
+			storageBucket: "delhaizebase.appspot.com",
+			messagingSenderId: "602137457616"
+		};
+
+		firebase.initializeApp(config);
+		this.firebase = firebase;
+	},
 	mounted() {
-		Vue.nextTick(() => {
-			//console.log("firebase:", firebase);
-			firebase.api.auth().onAuthStateChanged((user) => {
-				if (user) {
-					this.$router.push('/');
-				} else {
-					this.$router.push('/login');
-				}
+
+		this.$bindAsArray("orders", this.firebase.database().ref('orders').limitToLast(1), null, (e) => {
+			this.currentOrder = this.orders[0];
+			let orderKey = this.orders[0][".key"];
+			this.$bindAsArray("currentOrderLines", this.firebase.database().ref('orderLines/' + orderKey), (e) => {
+				console.log("orders loaded");
 			});
 		});
+
 	}
 })
 
