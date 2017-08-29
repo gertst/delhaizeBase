@@ -22,20 +22,15 @@
 					</md-button>
 				</div>
 			</md-toolbar>
+			<md-stepper>
+				<md-step md-label="Add" :md-editable="true" @click="stepClick(event)"></md-step>
+				<md-step md-label="Shop" :md-editable="true"></md-step>
+				<md-step md-label="Settle" :md-editable="true"></md-step>
+			</md-stepper>
 		</md-whiteframe>
 
 		<main class="main-content">
-			<!--<md-stepper>
-				<md-step md-button-continue="To the shop">
 
-				</md-step>
-				<md-step>
-					<p>This seems something I need to focus on just after the first step.</p>
-				</md-step>
-				<md-step>
-					<p>This seems something important I need to fix just right before the last step.</p>
-				</md-step>
-			</md-stepper>-->
 
 			<groceriesView v-if="$root.user.email"></groceriesView>
 			<loginView v-if="!$root.user.email"></loginView>
@@ -79,7 +74,12 @@
 			logOut() {
 				this.$root.firebase.auth().signOut();
 				//user = {};
+			},
+
+			stepClick(event) {
+				console.log("step", event);
 			}
+
 		},
 
 		mounted() {
@@ -88,11 +88,18 @@
 			this.$root.firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
 					this.$root.user = user;
+					this.$root.firebase.database().ref('users/' + user.displayName.split(" ").join("_")).set(
+						{
+							userName: user.displayName,
+							email: user.email,
+							photoURL: user.photoURL,
+							lastSeen: new Date().toISOString()
+						});
+					//console.log("user", user);
 				} else {
 
 				}
 			});
-
 
 		}
 	}
@@ -144,6 +151,10 @@
 	}
 	.md-account-header .md-avatar-list .md-list-item-container:hover {
 		background: none !important;
+	}
+	/*hide stepper steps*/
+	div.md-stepper.md-theme-default > div {
+		display: none;
 	}
 
 </style>
