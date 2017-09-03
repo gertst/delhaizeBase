@@ -25,28 +25,26 @@
 			</md-table-alternate-header>-->
 
 			<md-table md-sort="">
-				<md-table-header>
-					<md-table-row>
-						<md-table-head width="50px" md-sort-by="user">User</md-table-head>
-						<md-table-head md-sort-by="department">Department</md-table-head>
-						<md-table-head width="50px" md-sort-by="qty" md-numeric md-tooltip="Always set to 1 for weighted items">Qty</md-table-head>
-						<md-table-head md-sort-by="item">Item</md-table-head>
+				<md-table-header >
+					<md-table-row >
+						<md-table-head width="40px">User</md-table-head>
+						<md-table-head>Department</md-table-head>
+						<md-table-head width="30px">Qty</md-table-head>
+						<md-table-head>Item</md-table-head>
+						<md-table-head width="50px">Edit</md-table-head>
 					</md-table-row>
 				</md-table-header>
 
 				<md-table-body>
 					<md-table-row v-for="(row, rowIndex) in $root.currentOrderLines"
 					              :key="rowIndex"
-					              :md-item="row" :md-selection="true">
+					              :md-item="row" :md-selection="false">
 						<md-table-cell :md-numeric="false">
 							<md-avatar class="md-small">
-								<img src="https://lh5.googleusercontent.com/-xUgN6pRDvTY/AAAAAAAAAAI/AAAAAAABGVM/O4uoSmzYS0E/photo.jpg" alt="People">
+								<img :src="row.userPhoto" alt="People">
 							</md-avatar>
 						</md-table-cell>
 						<md-table-cell  :md-numeric="false">
-							<!--<md-button class="md-icon-button">
-								<md-icon>edit</md-icon>
-							</md-button>-->
 							<span>{{ row.department }}</span>
 						</md-table-cell>
 
@@ -58,6 +56,13 @@
 							<span>{{ row.name }}</span>
 						</md-table-cell>
 
+						<md-table-cell :md-numeric="false">
+							<md-button
+									v-if="canEdit(row)"
+									@click="editItem(row)" class="md-icon-button">
+								<md-icon>edit</md-icon>
+							</md-button>
+						</md-table-cell>
 
 					</md-table-row>
 				</md-table-body>
@@ -67,65 +72,40 @@
 				<md-icon>add</md-icon>
 			</md-button>
 
+			<itemCard></itemCard>
 
 		</md-table-card>
 
-		<md-whiteframe md-elevation="3" class="input-item-whiteframe" v-if="showInputItem">
-			<md-card md-theme="accent">
-				<!--<md-card-media>-->
-					<!--<img src="assets/card-image-1.jpg" alt="People">-->
-				<!--</md-card-media>-->
-
-				<md-card-header>
-					<div class="md-title">Add an item</div>
-					<!--<div class="md-subhead">Subtitle here</div>-->
-				</md-card-header>
-
-				<md-card-content>
-					<md-input-container>
-						<label>Category</label>
-						<md-input></md-input>
-					</md-input-container>
-					<md-input-container>
-						<label>Qty</label>
-						<md-input type="number"></md-input>
-					</md-input-container>
-					<md-input-container>
-						<label>Item</label>
-						<md-input></md-input>
-					</md-input-container>
-				</md-card-content>
-
-				<md-card-actions>
-					<md-button>Add</md-button>
-					<md-button>Cancel</md-button>
-				</md-card-actions>
-
-			</md-card>
-		</md-whiteframe>
 	</div>
 
 </template>
 
 <script>
 
+	import ItemCard from "./ItemCard.vue";
 
 	export default {
 
 		components: {
-
+			ItemCard
 		},
 		data() {
 			return {
-				showInputItem: false
+
 			}
 		},
-		mounted() {
+		computed: {
 
 		},
 		methods: {
 			addItem() {
-				this.showInputItem = true;
+				this.$root.$emit("SHOW_ITEM_CARD");
+			},
+			editItem(row) {
+				this.$root.$emit("SHOW_ITEM_CARD", row);
+			},
+			canEdit(row) {
+				return row.userPhoto === this.$root.user.photoURL || this.$root.user.profile === "admin";
 			}
 		}
 	}
@@ -145,6 +125,13 @@
 	.md-theme-accent {
 		background-color: #e91e63;
 		color: rgba(255, 255, 255, .87);
+	}
+	.md-table-cell-container {
+		padding: 6px 4px 6px 4px !important;
+	}
+	.md-table-head-text {
+		padding-right: 4px !important;
+		padding-left: 4px !important;
 	}
 
 </style>

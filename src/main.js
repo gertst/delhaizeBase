@@ -26,6 +26,7 @@ new Vue({
 		orders: null,
 		currentOrder: null,
 		currentOrderLines: null,
+		departments: [],
 		user:{}
 	},
 	created() {
@@ -44,12 +45,21 @@ new Vue({
 	},
 	mounted() {
 
-		this.$bindAsArray("orders", this.firebase.database().ref('orders').limitToLast(1), null, (e) => {
+		this.$bindAsArray("orders", this.firebase.database().ref('orders').limitToLast(1), null, function(e) {
 			this.currentOrder = this.orders[0];
 			let orderKey = this.orders[0][".key"];
-			this.$bindAsArray("currentOrderLines", this.firebase.database().ref('orderLines/' + orderKey), (e) => {
+			this.$bindAsArray("currentOrderLines", this.firebase.database().ref('orderLines/' + orderKey), function(e) {
 				console.log("orders loaded");
 			});
+		});
+		let self = this;
+		this.firebase.database().ref('departments').on('value', function(snapshot) {
+			let arr = [];
+			Object.values(snapshot.val()).forEach(item => {
+				arr.push(item.label);
+			});
+			self.departments = arr;
+			//console.log("val:", self.departments);
 		});
 
 	}

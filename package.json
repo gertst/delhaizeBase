@@ -19,6 +19,7 @@
     "vue-axios": "^2.0.2",
     "vue-material": "^0.7.4",
     "vue-router": "^2.3.1",
+    "vue-select": "github:sagalbot/vue-select",
     "vuefire": "^1.4.3",
     "vuejs-autocomplete": "^0.1.1"
   },

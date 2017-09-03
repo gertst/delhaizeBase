@@ -22,8 +22,8 @@
 					</md-button>
 				</div>
 			</md-toolbar>
-			<md-stepper>
-				<md-step md-label="Add" :md-editable="true" @click="stepClick(event)"></md-step>
+			<md-stepper @click.native="stepClick(this)">
+				<md-step md-label="Add" :md-editable="true"></md-step>
 				<md-step md-label="Shop" :md-editable="true"></md-step>
 				<md-step md-label="Settle" :md-editable="true"></md-step>
 			</md-stepper>
@@ -73,30 +73,42 @@
 
 			logOut() {
 				this.$root.firebase.auth().signOut();
+				location.reload();
 				//user = {};
 			},
 
-			stepClick(event) {
-				console.log("step", event);
+			stepClick(event, a) {
+				console.log("step", event, a);
 			}
 
 		},
 
 		mounted() {
-
+			Vue.material.registerTheme('default', {
+				primary: 'blue',
+				accent: 'pink',
+				warn: 'red',
+				background: 'white'
+			})
 
 			this.$root.firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
-					this.$root.user = user;
-					this.$root.firebase.database().ref('users/' + user.displayName.split(" ").join("_")).set(
+					const userPath = 'users/' + user.displayName.split(" ").join("_");
+					//update or create user record
+					this.$root.firebase.database().ref(userPath).update(
 						{
 							userName: user.displayName,
 							email: user.email,
 							photoURL: user.photoURL,
 							lastSeen: new Date().toISOString()
-						});
-					//console.log("user", user);
-				} else {
+						}
+					);
+					this.$root.user = user;
+
+					//get user profile and store in local user
+					this.$root.firebase.database().ref(userPath).once('value').then(snapshot => {
+						this.$root.user.profile = snapshot.val().profile;
+					});
 
 				}
 			});
