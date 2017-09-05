@@ -3,10 +3,19 @@
 
 
 	<md-whiteframe md-elevation="3" class="input-item-whiteframe" v-show="isVisible">
-			<md-card class="md-accent">
-				<!--<md-card-media>-->
-					<!--<img src="assets/card-image-1.jpg" alt="People">-->
-				<!--</md-card-media>-->
+
+		<md-toolbar class="md-accent md-dense">
+			<md-button class="md-icon-button" @click.native="isVisible = false">
+				<md-icon>close</md-icon>
+			</md-button>
+
+			<h2 class="md-title" style="flex: 1">Add an item</h2>
+
+		</md-toolbar>
+		<md-card class="md-accent">
+				<md-card-media>
+					<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg" alt="People">
+				</md-card-media>
 
 				<md-card-header>
 					<div v-if="!isEdit" class="md-title">Add an item</div>
@@ -41,6 +50,7 @@
 					<!--</md-layout>-->
 
 					<v-select :value="department"
+					          placeholder="Department"
 					          :taggable="true"
 					          :on-change="onChangeDepartment"
 					          :options="$root.departments"
@@ -50,11 +60,13 @@
 						<label>Qty</label>
 						<md-input type="number" v-model="qty"></md-input>
 					</md-input-container>
-					<md-input-container>
-						<label>Item</label>
-						<md-input v-model="item"></md-input>
-					</md-input-container>
-					<v-select :value.sync="item" :options="departmentItems"></v-select>
+
+					<v-select :value="item"
+					          placeholder="Item"
+					          :options="departmentItems"
+					          :taggable="true"
+					          :on-change="onChangeItem">
+					</v-select>
 				</md-card-content>
 				<md-card-actions>
 					<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">
@@ -70,7 +82,7 @@
 				</md-card-actions>
 
 			</md-card>
-		</md-whiteframe>
+	</md-whiteframe>
 
 </template>
 
@@ -106,6 +118,7 @@
 			this.$root.$on("SHOW_ITEM_CARD", (payload) => {
 				if (payload) {
 					this.isEdit = true;
+					this.onChangeDepartment(payload.department);
 					this.department = payload.department;
 					this.qty = payload.qty;
 					this.item = payload.name;
@@ -127,15 +140,26 @@
 		},
 		methods: {
 			onChangeDepartment(val) {
-				//console.log("dept:", val);
-				this.department = val;
-				this.$root.firebase.database().ref("departmentItems/" + this.department).on("value", snapshot => {
-					this.departmentItems = snapshotToArray(snapshot);
-				});
+				if (this.department !== val) {
+					console.log("onChangeDepartment:", val);
+					this.department = val;
+					this.$root.firebase.database().ref("departmentItems/" + this.department).on("value", snapshot => {
+						this.departmentItems = snapshotToArray(snapshot);
+					});
+				}
+			},
+			onChangeItem(val) {
+				//picked from existing item? yes
+				if (val && val.label) {
+					this.item = val.label;
+				} else {
+					this.item = val;
+				}
 			},
 
 			update() {
 				this.isVisible = false;
+				let oldDepartment = this.currentItem.department;
 				if (this.isEdit) {
 					const key = this.currentItem['.key'];
 					// remove the .key attribute
@@ -153,7 +177,8 @@
 					this.$root.firebase.database().ref("orderLines/" + this.$root.currentOrder[".key"]).push(
 						{
 							"user": this.$root.user.displayName.split(" ").join("_"),
-							"userPhoto": this.$root.user.photoURL,
+							//crop photo to 80 px
+							"userPhoto": this.$root.user.photoURL.split("/photo.jpg").join("/s80-c/photo.jpg"),
 							"department": this.department,
 							"name": this.item,
 							"qty": this.qty,
@@ -166,6 +191,22 @@
 					return this.department === i
 				})) {
 					this.$root.firebase.database().ref("departments/" + this.department).update({label:this.department});
+				}
+
+				//add or remove item to department
+				if (oldDepartment !== this.department) {
+					//console.log("item", this.currentItem.name, this.item);
+					console.log("departmentItems:", this.departmentItems);
+					if (this.currentItem.name !== this.item && this.currentItem.name) {
+						//check to remove old
+					}
+				}
+				//already in list? no
+				if (!this.departmentItems.find(item => { return item.label === this.item })) {
+					//add new
+					this.$root.firebase.database().ref("departmentItems/" + this.department + "/" + this.item).update({
+						label: this.item
+					});
 				}
 			},
 
@@ -183,19 +224,40 @@
 </script>
 
 <style>
+
 	.add-item-btn {
 		position: fixed !important;
 	}
 	.input-item-whiteframe {
+		z-index: 10;
 		width: 100%;
-		padding: 0 14px;
-		bottom: 0;
+		height: 100%;
 		position: fixed;
-		z-index: 10000;
+		padding: 0 0px;
+
 	}
 	.md-theme-accent {
 		background-color: #e91e63;
 		color: rgba(255, 255, 255, .87);
+	}
+
+	.v-select .selected-tag {
+		color: #fff;
+		background-color: #2196f3;
+		border: none;
+		border-radius: 4px;
+		height: 26px;
+		margin: 4px 2px 0 3px;
+		padding: 2px .5em;
+		float: left;
+		line-height: 24px;
+		font-size: 1rem;
+	}
+	.dropdown-menu {
+		/*color: #000000 !important;*/
+	}
+	::-webkit-input-placeholder { /* Chrome */
+		color: white;
 	}
 
 </style>

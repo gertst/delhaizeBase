@@ -1,10 +1,10 @@
 <template>
-	<md-sidenav class="md-left md-fixed" ref="sidebar">
+	<md-sidenav class="md-left md-fixed" :md-swipeable="true" ref="sidebar">
 		<md-toolbar class="md-account-header">
 			<md-list class="md-transparent">
 				<md-list-item class="md-avatar-list">
 					<md-avatar v-if="$root.user.email" class="md-large">
-						<img :src="$root.user.photoURL" alt="People">
+						<img :src="$root.user.photoURL.split('/photo.jpg').join('/s128-c/photo.jpg')" alt="People">
 					</md-avatar>
 				</md-list-item>
 

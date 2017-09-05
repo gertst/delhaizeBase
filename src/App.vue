@@ -3,7 +3,7 @@
 		<sideBar></sideBar>
 
 		<md-whiteframe md-elevation="3" class="main-toolbar">
-			<md-toolbar>
+			<md-toolbar class="md-dense">
 				<div class="md-toolbar-container">
 					<md-button class="md-icon-button" @click="$root.$emit('sideBarToggle')">
 						<md-icon>menu</md-icon>
@@ -36,6 +36,9 @@
 			<loginView v-if="!$root.user.email"></loginView>
 
 		</main>
+
+		<itemCard></itemCard>
+
 	</div>
 
 </template>
@@ -46,6 +49,7 @@
 	import SideBar from "./components/SideBar.vue"
 	import LoginView from './components/LoginView.vue'
 	import GroceriesView from './components/GroceriesView.vue'
+	import ItemCard from "./components/ItemCard.vue";
 
 	Vue.use(VueMaterial)
 
@@ -55,7 +59,8 @@
 		components: {
 			SideBar,
 			LoginView,
-			GroceriesView
+			GroceriesView,
+			ItemCard
 		},
 
 		data() {
