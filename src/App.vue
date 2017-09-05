@@ -13,13 +13,17 @@
 
 					<span style="flex: 1"></span>
 
-					<md-button class="md-icon-button">
-						<md-icon>search</md-icon>
-					</md-button>
+					<span>Today</span>
 
 					<md-button class="md-icon-button">
-						<md-icon>view_module</md-icon>
+						<md-icon>date_range</md-icon>
 					</md-button>
+
+					<md-avatar class="md-small avatar" @click.native="onAvatarClicked()">
+						<img :src="getCurrentOrderUserPhotoURL" >
+					</md-avatar>
+
+
 				</div>
 			</md-toolbar>
 			<md-stepper @click.native="stepClick(this)">
@@ -71,7 +75,9 @@
 
 
 		computed: {
-
+			getCurrentOrderUserPhotoURL() {
+				return this.$root.currentOrder ? this.$root.currentOrder.paidByPhotoURL.split("/photo.jpg").join("/s64-c/photo.jpg") : "static/img/user.png"
+			}
 		},
 
 		methods: {
@@ -84,6 +90,10 @@
 
 			stepClick(event, a) {
 				console.log("step", event, a);
+			},
+
+			onAvatarClicked() {
+				console.log("avatar");
 			}
 
 		},
@@ -172,6 +182,13 @@
 	/*hide stepper steps*/
 	div.md-stepper.md-theme-default > div {
 		display: none;
+	}
+
+	.avatar {
+		width: 32px;
+		min-width: 32px;
+		height: 32px;
+		min-height: 32px;
 	}
 
 </style>

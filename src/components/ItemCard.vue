@@ -1,87 +1,63 @@
 <template>
 
 
-
 	<md-whiteframe md-elevation="3" class="input-item-whiteframe" v-show="isVisible">
 
-		<md-toolbar class="md-accent md-dense">
+		<md-toolbar class="md-dense">
 			<md-button class="md-icon-button" @click.native="isVisible = false">
 				<md-icon>close</md-icon>
 			</md-button>
 
-			<h2 class="md-title" style="flex: 1">Add an item</h2>
+			<h2 v-if="!isEdit" class="md-title" style="flex: 1">Add an item</h2>
+			<h2 v-if="isEdit" class="md-title" style="flex: 1">Edit an item</h2>
 
 		</md-toolbar>
-		<md-card class="md-accent">
-				<md-card-media>
-					<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg" alt="People">
-				</md-card-media>
 
-				<md-card-header>
-					<div v-if="!isEdit" class="md-title">Add an item</div>
-					<div v-if="isEdit" class="md-title">Edit item</div>
-					<!--<div class="md-subhead">Subtitle here</div>-->
-				</md-card-header>
+		<md-card class="md-accent item-card">
+			<md-card-actions>
+				<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">
+					<md-icon class="">delete</md-icon>
+				</md-button>
+				<span style="flex: 1"></span>
+				<md-button @click="isVisible=false">Cancel</md-button>
+				<md-button @click="update()"
+				           :disabled="!(department && item && qty)">
+					<span v-if="isEdit">Update</span>
+					<span v-else>Add</span>
+				</md-button>
+			</md-card-actions>
+			<md-card-media class="item-image" :style="imageStyle(innerHeight)">
+				<md-button class="md-icon-button add-image" @click.native="">
+					<md-icon>add_a_photo</md-icon>
+				</md-button>
+				<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg"
+				     alt="People">
+			</md-card-media>
 
-				<md-card-content>
-					<!--<auto-complete-->
-							<!--v-model="department"-->
-							<!--:list="$root.departments" -->
-							<!--label=""-->
-							<!--placeholder="">-->
-					<!--</auto-complete>-->
-					<!--<md-layout md-gutter>-->
-						<!--<md-layout md-flex>-->
-							<!--<v-select :value.sync="department" :options="$root.departments"></v-select>-->
 
-							<!--<md-input-container>-->
-								<!--<label>Department</label>-->
-								<!--<md-select v-model="department"-->
-								           <!--v-if="!showNewDepartment" md-theme="default">-->
-									<!--<md-option :key="depItem" v-for="depItem in $root.departments" :value="depItem">{{depItem}}</md-option>-->
-								<!--</md-select>-->
-								<!--<md-input v-if="showNewDepartment" v-model="department"></md-input>-->
-							<!--</md-input-container>-->
-						<!--</md-layout>-->
-						<!--<md-layout>-->
-							<!--<md-button v-if="!showNewDepartment" @click="showNewDepartment = true;">Add New</md-button>-->
-							<!--<md-button v-if="showNewDepartment" @click="showNewDepartment = false; department='';">Undo</md-button>-->
-						<!--</md-layout>-->
-					<!--</md-layout>-->
+			<md-card-content>
+				<v-select :value="department"
+				          placeholder="Department"
+				          :taggable="true"
+				          :on-change="onChangeDepartment"
+				          :options="$root.departments"
+				></v-select>
 
-					<v-select :value="department"
-					          placeholder="Department"
-					          :taggable="true"
-					          :on-change="onChangeDepartment"
-					          :options="$root.departments"
-					></v-select>
+				<md-input-container>
+					<label>Qty</label>
+					<md-input type="number" v-model="qty"></md-input>
+				</md-input-container>
 
-					<md-input-container>
-						<label>Qty</label>
-						<md-input type="number" v-model="qty"></md-input>
-					</md-input-container>
+				<v-select :value="item"
+				          placeholder="Item"
+				          :options="departmentItems"
+				          :taggable="true"
+				          :on-change="onChangeItem">
+				</v-select>
+			</md-card-content>
 
-					<v-select :value="item"
-					          placeholder="Item"
-					          :options="departmentItems"
-					          :taggable="true"
-					          :on-change="onChangeItem">
-					</v-select>
-				</md-card-content>
-				<md-card-actions>
-					<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">
-						<md-icon class="">delete</md-icon>
-					</md-button>
-					<span style="flex: 1"></span>
-					<md-button @click="isVisible=false">Cancel</md-button>
-					<md-button @click="update()"
-					           :disabled="!(department && item && qty)">
-						<span v-if="isEdit">Update</span>
-						<span v-else>Add</span>
-					</md-button>
-				</md-card-actions>
 
-			</md-card>
+		</md-card>
 	</md-whiteframe>
 
 </template>
@@ -99,9 +75,7 @@
 			MdInput,
 			vSelect
 		},
-		props:{
-
-		},
+		props: {},
 		data() {
 
 			return {
@@ -111,7 +85,8 @@
 				qty: 1,
 				item: "",
 				isEdit: true,
-				departmentItems: []
+				departmentItems: [],
+				innerHeight
 			}
 		},
 		mounted() {
@@ -134,11 +109,20 @@
 				this.isVisible = true;
 				this.showNewDepartment = false;
 			});
+			window.addEventListener('resize', this.handleResize)
+
+		},
+		beforeDestroy() {
+			window.removeEventListener('resize', this.handleResize)
 		},
 		computed: {
 
 		},
 		methods: {
+			imageStyle(innerHeight) {
+				return "max-height:" + (innerHeight - 530) + "px"
+			},
+
 			onChangeDepartment(val) {
 				if (this.department !== val) {
 					console.log("onChangeDepartment:", val);
@@ -178,7 +162,7 @@
 						{
 							"user": this.$root.user.displayName.split(" ").join("_"),
 							//crop photo to 80 px
-							"userPhoto": this.$root.user.photoURL.split("/photo.jpg").join("/s80-c/photo.jpg"),
+							"userPhoto": this.$root.user.photoURL.split("/photo.jpg").join("/s64-c/photo.jpg"),
 							"department": this.department,
 							"name": this.item,
 							"qty": this.qty,
@@ -188,9 +172,9 @@
 				}
 				//add department if it does not yet exist
 				if (!Object.values(this.$root.departments).find(i => {
-					return this.department === i
-				})) {
-					this.$root.firebase.database().ref("departments/" + this.department).update({label:this.department});
+						return this.department === i
+					})) {
+					this.$root.firebase.database().ref("departments/" + this.department).update({label: this.department});
 				}
 
 				//add or remove item to department
@@ -202,7 +186,9 @@
 					}
 				}
 				//already in list? no
-				if (!this.departmentItems.find(item => { return item.label === this.item })) {
+				if (!this.departmentItems.find(item => {
+						return item.label === this.item
+					})) {
 					//add new
 					this.$root.firebase.database().ref("departmentItems/" + this.department + "/" + this.item).update({
 						label: this.item
@@ -218,6 +204,11 @@
 
 			addNewDepartment() {
 				this.showNewDepartment = false;
+			},
+
+			handleResize() {
+				this.innerHeight = window.innerHeight;
+				//console.log("innerh:", this.innerHeight)
 			}
 		}
 	}
@@ -228,14 +219,20 @@
 	.add-item-btn {
 		position: fixed !important;
 	}
+
 	.input-item-whiteframe {
 		z-index: 10;
 		width: 100%;
 		height: 100%;
 		position: fixed;
 		padding: 0 0px;
-
 	}
+
+	.item-card {
+		display: flex;
+		height: 100%;
+	}
+
 	.md-theme-accent {
 		background-color: #e91e63;
 		color: rgba(255, 255, 255, .87);
@@ -253,11 +250,25 @@
 		line-height: 24px;
 		font-size: 1rem;
 	}
+
 	.dropdown-menu {
 		/*color: #000000 !important;*/
 	}
+
 	::-webkit-input-placeholder { /* Chrome */
 		color: white;
+	}
+
+	.add-image {
+		position: absolute;
+	}
+
+	.add-image .md-icon {
+		text-shadow: 2px 2px 5px black;
+	}
+	.item-image {
+		/*max-height: 9px;*/
+		overflow: hidden;
 	}
 
 </style>

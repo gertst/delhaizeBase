@@ -40,7 +40,7 @@
 					              :key="rowIndex"
 					              :md-item="row" :md-selection="false">
 						<md-table-cell>
-							<md-avatar class="md-small">
+							<md-avatar class="md-small avatar">
 								<img :src="row.userPhoto" alt="People">
 							</md-avatar>
 						</md-table-cell>
