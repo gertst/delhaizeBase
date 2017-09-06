@@ -14,12 +14,16 @@
 			var uiConfig = {
 				signInSuccessUrl: '/',
 				signInOptions: [
-					firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-					firebase.auth.EmailAuthProvider.PROVIDER_ID
+					firebase.auth.GoogleAuthProvider.PROVIDER_ID
+//					firebase.auth.EmailAuthProvider.PROVIDER_ID
 				]
 			};
-			var ui = new firebaseui.auth.AuthUI(firebase.auth());
-			ui.start('#firebaseui-auth-container', uiConfig);
+			if (this.$root.ui) {
+				this.$root.ui.reset();
+			} else {
+				this.$root.ui = new firebaseui.auth.AuthUI(firebase.auth());
+				this.$root.ui.start('#firebaseui-auth-container', uiConfig);
+			}
 		}
 	}
 </script>
