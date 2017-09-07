@@ -2,8 +2,8 @@
 
 
 	<md-whiteframe md-elevation="O" class="order-picker color-blue" v-show="isVisible">
-
-		<vue-datepicker-es6></vue-datepicker-es6>
+		test
+		test 2
 	</md-whiteframe>
 
 </template>
@@ -11,12 +11,10 @@
 <script>
 
 	import {snapshotToArray} from "../utils/firebaseUtils";
-	import VueDatepickerEs6 from "vue-datepicker-es6"
 
 	export default {
 
 		components: {
-			VueDatepickerEs6
 		},
 		props: {},
 		data() {
