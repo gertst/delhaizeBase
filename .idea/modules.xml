@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/delhaizeBase.iml" filepath="$PROJECT_DIR$/.idea/delhaizeBase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/fireBase.iml" filepath="$PROJECT_DIR$/.idea/fireBase.iml" />
     </modules>
   </component>
 </project>
