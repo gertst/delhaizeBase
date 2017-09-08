@@ -13,9 +13,9 @@
 
 					<span style="flex: 1"></span>
 
-					<span>Today</span>
+					<span @click="$root.$emit('SHOW_ORDER_PICKER')">Today</span>
 
-					<md-button class="md-icon-button">
+					<md-button class="md-icon-button" @click.native="$root.$emit('SHOW_ORDER_PICKER')">
 						<md-icon>date_range</md-icon>
 					</md-button>
 
@@ -26,6 +26,7 @@
 
 				</div>
 			</md-toolbar>
+			<order-picker></order-picker>
 			<md-stepper @click.native="stepClick(this)">
 				<md-step md-label="Add" :md-editable="true"></md-step>
 				<md-step md-label="Shop" :md-editable="true"></md-step>
@@ -54,7 +55,7 @@
 	import LoginView from './components/LoginView.vue'
 	import GroceriesView from './components/GroceriesView.vue'
 	import ItemCard from "./components/ItemCard.vue";
-	import OrderView from
+	import OrderPicker from "./components/OrderPicker.vue";
 
 	Vue.use(VueMaterial)
 
@@ -65,7 +66,8 @@
 			SideBar,
 			LoginView,
 			GroceriesView,
-			ItemCard
+			ItemCard,
+			OrderPicker
 		},
 
 		data() {
@@ -85,8 +87,9 @@
 
 			logOut() {
 				this.$root.firebase.auth().signOut();
-				location.reload();
-				//user = {};
+				Vue.nextTick(() => {
+					location.reload();
+				});
 			},
 
 			stepClick(event, a) {

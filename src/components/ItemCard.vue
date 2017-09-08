@@ -11,21 +11,25 @@
 			<h2 v-if="!isEdit" class="md-title" style="flex: 1">Add an item</h2>
 			<h2 v-if="isEdit" class="md-title" style="flex: 1">Edit an item</h2>
 
+			<!--<span style="flex: 1"></span>-->
+			<md-button @click="update()"
+			           :disabled="!(department && item && qty)">
+				<span>Save</span>
+			</md-button>
+			<!--<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">-->
+				<!--<md-icon class="">more_vert</md-icon>-->
+			<!--</md-button>-->
+			<md-menu md-direction="bottom left" v-if="isEdit">
+				<md-button md-menu-trigger style="min-width: 30px"><md-icon class="">more_vert</md-icon></md-button>
+				<md-menu-content>
+					<md-menu-item @click="deleteItem()">Delete Item</md-menu-item>
+				</md-menu-content>
+			</md-menu>
+
 		</md-toolbar>
 
 		<md-card class="md-accent item-card">
-			<md-card-actions>
-				<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">
-					<md-icon class="">delete</md-icon>
-				</md-button>
-				<span style="flex: 1"></span>
-				<md-button @click="isVisible=false">Cancel</md-button>
-				<md-button @click="update()"
-				           :disabled="!(department && item && qty)">
-					<span v-if="isEdit">Update</span>
-					<span v-else>Add</span>
-				</md-button>
-			</md-card-actions>
+
 			<md-card-media class="item-image" :style="imageStyle(innerHeight)">
 				<md-button class="md-icon-button add-image" @click.native="">
 					<md-icon>add_a_photo</md-icon>
@@ -264,7 +268,7 @@
 	}
 
 	.add-image .md-icon {
-		text-shadow: 2px 2px 5px black;
+		text-shadow: 2px 2px 3px #4b4b4b;
 	}
 	.item-image {
 		/*max-height: 9px;*/
