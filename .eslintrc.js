@@ -17,7 +17,7 @@ module.exports = {
   ],
   // add your custom rules here
   'rules': {
-  	"indent": 0,
+      "indent": 0,
 	  "no-tabs": 0,
       "new-cap": 0,
       "key-spacing": 0,
