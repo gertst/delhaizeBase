@@ -9,7 +9,7 @@
 						<md-icon>menu</md-icon>
 					</md-button>
 
-					<h2 class="md-title">DelhaizeBase</h2>
+					<h2 class="md-title">£</h2>
 
 					<span style="flex: 1"></span>
 
@@ -54,6 +54,7 @@
 	import LoginView from './components/LoginView.vue'
 	import GroceriesView from './components/GroceriesView.vue'
 	import ItemCard from "./components/ItemCard.vue";
+	import OrderView from
 
 	Vue.use(VueMaterial)
 
