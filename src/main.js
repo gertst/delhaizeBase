@@ -7,6 +7,7 @@ import Vuefire from 'vuefire'
 import firebase from "firebase";
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import moment from "moment";
 
 
 Vue.use(Vuefire);
@@ -27,7 +28,8 @@ new Vue({
 		currentOrder: null,
 		currentOrderLines: null,
 		departments: [],
-		user:{}
+		shopperList: [],
+		user: {}
 	},
 	created() {
 		// Initialize Firebase
@@ -44,14 +46,12 @@ new Vue({
 		this.firebase = firebase;
 	},
 	mounted() {
+		//open today
+		const dateString = moment().format("YYYY-MM-DD");
+		this.openOrder(dateString);
 
-		this.$bindAsArray("orders", this.firebase.database().ref('orders').limitToLast(1), null, function(e) {
-			this.currentOrder = this.orders[0];
-			let orderKey = this.orders[0][".key"];
-			this.$bindAsArray("currentOrderLines", this.firebase.database().ref('orderLines/' + orderKey), function(e) {
-				console.log("orders loaded");
-			});
-		});
+
+		//get departments
 		let self = this;
 		this.firebase.database().ref('departments').on('value', function(snapshot) {
 			let arr = [];
@@ -62,6 +62,38 @@ new Vue({
 			//console.log("val:", self.departments);
 		});
 
+		//get users that have isShopper to true
+		this.firebase.database().ref('users').orderByChild("isShopper").equalTo(true).on('value', function(snapshot) {
+			let arr = [];
+			Object.values(snapshot.val()).forEach(item => {
+				arr.push(item);
+			});
+			self.shopperList = arr;
+			//console.log("val:", self.shopperList);
+		});
+
+		this.$on("OPEN_ORDER", dateString => {
+			this.openOrder(dateString);
+		});
+
+	},
+
+	methods: {
+		openOrder(dateString) {
+			console.log("openorder", dateString);
+			this.$bindAsObject("currentOrder", this.firebase.database().ref('orders').child(dateString), null, function(e) {
+				if (this.currentOrder && this.currentOrder.hasOwnProperty("paidBy")) {
+					//this.currentOrder = this.orders[0];
+					this.$bindAsArray("currentOrderLines", this.firebase.database().ref('orderLines/' + dateString), null, function (e) {
+						console.log("order loaded");
+					});
+				} else {
+					this.$root.$emit("SHOW_ORDER_PICKER");
+				}
+
+			});
+		}
+
 	}
-})
+});
 

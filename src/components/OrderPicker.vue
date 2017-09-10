@@ -2,16 +2,41 @@
 
 
 	<md-whiteframe md-elevation="O" class="order-picker color-blue" v-show="isVisible">
-		<calendar
-				:value="orderDate"
-				:disabled-days-of-week="disabled"
-				format="d/MM/YYYY"
-				:clear-button="false"
-				placeholder="Date"
-				:pane="1"
-				:has-input="false"
-				i18n="en"
-		></calendar>
+
+		<md-toolbar class="md-dense">
+			<md-button class="md-icon-button" @click.native="isVisible = false">
+				<md-icon>close</md-icon>
+			</md-button>
+
+			<h2 class="md-title" style="flex: 1">Grocery List</h2>
+			<!--<h2 v-if="isEdit" class="md-title" style="flex: 1">Edit an item</h2>-->
+
+			<!--<span style="flex: 1"></span>-->
+			<md-button @click="open()"
+			           :disabled="false">
+				<span>Open</span>
+			</md-button>
+
+
+
+		</md-toolbar>
+
+		<date-picker color="#F44336"
+		             :format="formatDate"
+		             :value="orderDate"
+		             v-model="orderDate"
+		             :activities="activities">
+		</date-picker>
+
+		<md-input-container>
+			<label for="shopper">Shopper</label>
+			<md-select name="shopper" id="shopper" v-model="shopper">
+				<md-option v-for="user in $root.shopperList" :key="user.userName" :value="user.userName">{{user.userName}}</md-option>
+			</md-select>
+		</md-input-container>
+
+		<!--<md-button class="md-raised" click="openOrder()">Open</md-button>-->
+
 	</md-whiteframe>
 
 </template>
@@ -19,21 +44,22 @@
 <script>
 
 	import {snapshotToArray} from "../utils/firebaseUtils";
-	import Calendar from "./vue2-calendar/src/calendar.vue";
+	import DatePicker from "./DatePicker.vue";
+	import moment from "moment";
 
 	export default {
 
 		components: {
-			Calendar
+			DatePicker
 		},
 		props: {},
 		data() {
 
 			return {
 				isVisible: false,
-				orderDate: {
-					time: new Date()
-				}
+				orderDate: "",
+				shopper: "",
+				activities:{}
 			}
 		},
 		mounted() {
@@ -41,24 +67,71 @@
 				if (payload) {
 
 				}
+				if (this.$root.currentOrder && this.$root.currentOrder[".key"]) {
+					this.orderDate = this.$root.currentOrder[".key"];
+					console.log("orderdate", this.orderDate);
+				}
+				if (this.$root.currentOrder && this.$root.currentOrder.paidBy) {
+					this.shopper = this.$root.currentOrder.paidBy;
+				}
 				this.isVisible = true;
+				console.log("SHOW_ORDER_PICKER");
+				this.$bindAsArray("activities", this.$root.firebase.database().ref().child('orders')
+					.orderByChild("yyyy-mm").equalTo(this.orderDate.substr(0, 7)), null, (e) => {
+					console.log("new activities loaded", this.$root);
+					this.$root.$emit("MONTH_ACTIVITIES_UPDATED", this.activities);
+				});
 			});
 
 		},
 		computed: {
+			photoURL() {
+				if (this.shopper) {
+					return this.$root.shopperList.find(shopper => {
+						return shopper.userName === this.shopper
+					}).photoURL
+				} else {
+					return ""
+				}
+			},
+			today() {
+				return moment().format("YYYY-MM-DD");
+			}
 
 		},
 		methods: {
+			formatDate (date) {
+				console.log("formatDate", moment(date).format("YYYY-MM-DD"));
+				return moment(date).format("YYYY-MM-DD");
+			},
 
+			open() {
+				//console.log("open", this.shopper, this.photoURL);
+				this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).update({
+					"yyyy-mm": this.orderDate.substr(0, 7),
+					"paidBy": this.shopper,
+					"paidByPhotoURL": this.photoURL
+				}).then(() => {
+					this.$root.$emit("OPEN_ORDER", this.orderDate.substr(0, 10));
+					this.isVisible = false;
+				});
+			}
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 
 	.order-picker {
-		//background-color: ;
+		z-index: 11;
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		padding: 0 0px;
+		background-color: white;
 	}
+
+
 
 
 </style>

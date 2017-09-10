@@ -109,7 +109,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.add-item-btn {
 		position: fixed !important;
 	}

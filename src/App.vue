@@ -26,7 +26,7 @@
 
 				</div>
 			</md-toolbar>
-			<order-picker></order-picker>
+
 			<md-stepper @click.native="stepClick(this)">
 				<md-step md-label="Add" :md-editable="true"></md-step>
 				<md-step md-label="Shop" :md-editable="true"></md-step>
@@ -43,6 +43,8 @@
 		</main>
 
 		<itemCard></itemCard>
+
+		<order-picker></order-picker>
 
 	</div>
 
@@ -72,14 +74,14 @@
 
 		data() {
 			return {
-
+				root: this.$root
 			}
 		},
 
 
 		computed: {
 			getCurrentOrderUserPhotoURL() {
-				return this.$root.currentOrder ? this.$root.currentOrder.paidByPhotoURL.split("/photo.jpg").join("/s64-c/photo.jpg") : "static/img/user.png"
+				return this.$root.currentOrder && this.$root.currentOrder.paidByPhotoURL ? this.$root.currentOrder.paidByPhotoURL.split("/photo.jpg").join("/s64-c/photo.jpg") : "static/img/user.png"
 			}
 		},
 
@@ -112,7 +114,7 @@
 
 			this.$root.firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
-					const userPath = 'users/' + user.displayName.split(" ").join("_");
+					const userPath = 'users/' + user.displayName;
 					//update or create user record
 					this.$root.firebase.database().ref(userPath).update(
 						{

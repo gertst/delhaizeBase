@@ -1,7 +1,7 @@
 <template>
 
 
-	<md-whiteframe md-elevation="3" class="input-item-whiteframe" v-show="isVisible">
+	<md-whiteframe md-elevation="0" class="input-item-whiteframe" v-show="isVisible">
 
 		<md-toolbar class="md-dense">
 			<md-button class="md-icon-button" @click.native="isVisible = false">
@@ -164,7 +164,7 @@
 				} else { //add
 					this.$root.firebase.database().ref("orderLines/" + this.$root.currentOrder[".key"]).push(
 						{
-							"user": this.$root.user.displayName.split(" ").join("_"),
+							"user": this.$root.user.displayName,
 							//crop photo to 80 px
 							"userPhoto": this.$root.user.photoURL.split("/photo.jpg").join("/s64-c/photo.jpg"),
 							"department": this.department,
@@ -218,7 +218,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 
 	.add-item-btn {
 		position: fixed !important;
