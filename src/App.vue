@@ -46,6 +46,17 @@
 
 		<order-picker></order-picker>
 
+		<md-boards class="onboarding-unregistered-user" :md-controls="false" v-show="isVisible">
+			<md-board id="slide1">
+				<h1>Welcome {{$root.user.displayName}}!</h1>
+				<p>You're almost ready to add groceries!</p>
+				<p>Ask your administrator to grant you access.</p>
+				<md-button class="md-raised md-accent" @click.native="">
+					Ask Access
+				</md-button>
+			</md-board>
+		</md-boards>
+
 	</div>
 
 </template>
@@ -139,6 +150,11 @@
 					//get user profile and store in local user
 					this.$root.firebase.database().ref(userPath).once('value').then(snapshot => {
 						this.$root.user.profile = snapshot.val().profile;
+						const isShopper = snapshot.val().isShopper;
+						console.log("user profile", snapshot.val());
+						if (!isShopper) {
+
+						}
 					});
 
 				}
@@ -205,6 +221,15 @@
 		min-width: 32px;
 		height: 32px;
 		min-height: 32px;
+	}
+
+	.onboarding-unregistered-user {
+		background-color: white;
+		z-index: 20;
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		padding: 0 0px;
 	}
 
 </style>
