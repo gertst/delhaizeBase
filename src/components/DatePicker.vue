@@ -173,6 +173,9 @@
 		vertical-align: middle;
 		transition: background-color .15s;
 		width: 43px;
+		position: relative;
+		/*color: #ffffff;*/
+		/*background-color: #2296f3;*/
 	}
 
 	.calendar-body td:focus {
@@ -237,6 +240,32 @@
 		box-shadow: none;
 	}
 
+	.day-label {
+		position: absolute;
+		z-index: 2;
+		left: 6px;
+		bottom: 3px;
+		width: 32px;
+		text-align: center;
+	}
+	.md-avatar.md-small.avatar.md-theme-default {
+		position: relative;
+		left: 0px;
+		top: 2px;
+	}
+	.avatarOverlay {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-image: linear-gradient(to bottom,rgba(34, 150, 243, 0),rgba(34, 150, 243, 0.52));
+		border-radius: inherit;
+		margin: 5px 5px !important;
+	}
+	.activity-label {
+		color: white;
+	}
 
 </style>
 
@@ -324,7 +353,15 @@
 							    @keydown.enter="onInput"
 							    @keydown.space.stop.prevent="onInput"
 							    @keydown.esc="onClose"
-							    @click="setByDay(day)">{{ day.day }} {{ day.activity ? day.activity.paidBy : '' }}</td>
+							    @click="setByDay(day)">
+
+								<md-avatar class="md-small avatar" v-if="day.activity">
+									<img :src="avatarImageUrl(day)">
+								</md-avatar>
+								<div class="avatarOverlay" v-if="day.activity"></div>
+								<div class="day-label" :class="{'activity-label':day.activity}">{{ day.day }}</div>
+
+							</td>
 						</tr>
 						</tbody>
 					</table>
@@ -845,12 +882,12 @@
 			},
 
 			activity(day) {
-				console.log("day: ", day);
+				//console.log("day: ", day);
 				if (day) {
 					return this.activities.find(order => {
 						const m = this.currentMonth + 1 < 10 ? "0" + (this.currentMonth + 1) : this.currentMonth + 1;
 						const d = day < 10 ? "0" + day : day;
-						console.log("activity", this.currentYear + "-" + m + "-" + d);
+						//console.log("activity", this.currentYear + "-" + m + "-" + d);
 						return order[".key"] === this.currentYear + "-" + m + "-" + d;
 					});
 				} else {
@@ -909,6 +946,14 @@
 				this.hideBodyOverflow(false)
 
 				this.$emit('close')
+			},
+
+			avatarImageUrl(day) {
+				if (day.activity && day.activity.paidByPhotoURL) {
+					return day.activity.paidByPhotoURL.split('/photo.jpg').join('/s64-c/photo.jpg')
+				} else {
+					return "static/img/user.png"
+				}
 			}
 		}
 	}
