@@ -28,9 +28,12 @@
 			</md-toolbar>
 
 			<md-stepper @click.native="stepClick(this)">
-				<md-step md-label="Add" :md-editable="true"></md-step>
-				<md-step md-label="Shop" :md-editable="true"></md-step>
-				<md-step md-label="Settle" :md-editable="true"></md-step>
+				<md-step v-for="step in stepData"
+						 :key="step.label"
+						 :md-label="step.label"
+						 :md-disabled="step.disabled"
+						 :md-icon="step.icon">
+				</md-step>
 			</md-stepper>
 		</md-whiteframe>
 
@@ -46,16 +49,16 @@
 
 		<order-picker></order-picker>
 
-		<md-boards class="onboarding-unregistered-user" :md-controls="false" v-show="isVisible">
-			<md-board id="slide1">
-				<h1>Welcome {{$root.user.displayName}}!</h1>
-				<p>You're almost ready to add groceries!</p>
-				<p>Ask your administrator to grant you access.</p>
-				<md-button class="md-raised md-accent" @click.native="">
-					Ask Access
-				</md-button>
-			</md-board>
-		</md-boards>
+		<!--<md-boards class="onboarding-unregistered-user" :md-controls="false" v-show="isVisible">-->
+			<!--<md-board id="slide1">-->
+				<!--<h1>Welcome {{$root.user.displayName}}!</h1>-->
+				<!--<p>You're almost ready to add groceries!</p>-->
+				<!--<p>Ask your administrator to get access.</p>-->
+				<!--<md-button class="md-raised md-accent" @click.native="">-->
+					<!--Ask Access-->
+				<!--</md-button>-->
+			<!--</md-board>-->
+		<!--</md-boards>-->
 
 	</div>
 
@@ -85,7 +88,12 @@
 
 		data() {
 			return {
-				root: this.$root
+				root: this.$root,
+				initialStepData: [
+					{label:"Basket", disabled: false, icon:"shopping_basket"},
+					{label:"Shop", disabled: true, icon:"shopping_cart"},
+					{label:"Settle", disabled: true, icon:"attach_money"}
+				]
 			}
 		},
 
@@ -93,6 +101,14 @@
 		computed: {
 			getCurrentOrderUserPhotoURL() {
 				return this.$root.currentOrder && this.$root.currentOrder.paidByPhotoURL ? this.$root.currentOrder.paidByPhotoURL.split("/photo.jpg").join("/s64-c/photo.jpg") : "static/img/user.png"
+			},
+			stepData() {
+				let stepData = this.initialStepData;
+				if (this.$root.currentOrderLines) {
+					stepData[1].disabled = this.$root.currentOrderLines.length == 0
+					stepData[2].disabled = this.$root.currentOrderLines.length == 0
+				}
+				return stepData
 			}
 		},
 
@@ -105,8 +121,8 @@
 				});
 			},
 
-			stepClick(event, a) {
-				console.log("step", event, a);
+			stepClick() {
+				console.log("step");
 			},
 
 			onAvatarClicked() {
