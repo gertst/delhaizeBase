@@ -25,13 +25,13 @@
 			</md-table-alternate-header>-->
 
 			<md-table md-sort="">
-				<md-table-header >
-					<md-table-row >
+				<md-table-header>
+					<md-table-row>
 						<md-table-head width="40px">User</md-table-head>
 						<md-table-head>Department</md-table-head>
 						<md-table-head width="30px">Qty</md-table-head>
 						<md-table-head>Item</md-table-head>
-						<md-table-head width="50px">Edit</md-table-head>
+						<md-table-head width="30px">Edit</md-table-head>
 					</md-table-row>
 				</md-table-header>
 
@@ -109,7 +109,7 @@
 	}
 </script>
 
-<style scoped>
+<style>
 	.add-item-btn {
 		position: fixed !important;
 	}
@@ -118,12 +118,17 @@
 		background-color: #e91e63;
 		color: rgba(255, 255, 255, .87);
 	}
-	.md-table-cell-container {
-		padding: 6px 4px 6px 4px !important;
-	}
+	/*.md-table-cell-container {*/
+		/*padding: 6px 4px 6px 4px !important;*/
+	/*}*/
+
+
 	.md-table-head-text {
 		padding-right: 4px !important;
 		padding-left: 4px !important;
+	}
+	.md-table .md-table-cell .md-table-cell-container {
+		padding: 6px 8px 6px 8px;
 	}
 
 </style>

@@ -36,7 +36,6 @@
 				</md-select>
 			</md-input-container>
 
-			<!--<md-button class="md-raised" click="openOrder()">Open</md-button>-->
 		</div>
 
 	</md-whiteframe>
@@ -154,6 +153,12 @@
 		width: 308px;
 	}
 
+	.btn-holder {
+		width: 100%;
+	}
+	.btn-open {
+		right: 0;
+	}
 
 
 </style>

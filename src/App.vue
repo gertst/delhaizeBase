@@ -86,7 +86,8 @@
 
 		data() {
 			return {
-				root: this.$root
+				root: this.$root,
+				isVisible:false
 			}
 		},
 

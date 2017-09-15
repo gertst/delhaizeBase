@@ -33,6 +33,7 @@
     <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>"><% }}} %>
 
     <!--use firebase gui layout for user login-->
+    <link type="text/css" rel="stylesheet" href="static/css/app.css" />
     <link type="text/css" rel="stylesheet" href="static/css/firebaseui.css" />
     <link type="text/css" rel="stylesheet" href="https://unpkg.com/vue-material@0.7.4/dist/vue-material.css" />
   </head>

@@ -8,10 +8,10 @@
 				<md-icon>close</md-icon>
 			</md-button>
 
-			<h2 v-if="!isEdit" class="md-title" style="flex: 1">Add an item</h2>
-			<h2 v-if="isEdit" class="md-title" style="flex: 1">Edit an item</h2>
+			<h2 v-if="!isEdit" class="md-title">Add an item</h2>
+			<h2 v-if="isEdit" class="md-title" >Edit an item</h2>
 
-			<!--<span style="flex: 1"></span>-->
+			<span style="flex: 1"></span>
 			<md-button @click="update()"
 			           :disabled="!(department && item && qty)">
 				<span>Save</span>
@@ -19,12 +19,12 @@
 			<!--<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">-->
 				<!--<md-icon class="">more_vert</md-icon>-->
 			<!--</md-button>-->
-			<md-menu md-direction="bottom left" v-if="isEdit">
-				<md-button md-menu-trigger style="min-width: 30px"><md-icon class="">more_vert</md-icon></md-button>
-				<md-menu-content>
-					<md-menu-item @click="deleteItem()">Delete Item</md-menu-item>
-				</md-menu-content>
-			</md-menu>
+			<!--<md-menu md-direction="bottom left" v-if="isEdit">-->
+				<!--<md-button md-menu-trigger style="min-width: 30px"><md-icon class="">more_vert</md-icon></md-button>-->
+				<!--<md-menu-content>-->
+					<!--<md-menu-item @click="deleteItem()">Delete Item</md-menu-item>-->
+				<!--</md-menu-content>-->
+			<!--</md-menu>-->
 
 		</md-toolbar>
 
@@ -35,31 +35,44 @@
 					<md-icon>add_a_photo</md-icon>
 				</md-button>
 				<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg"
+				     class="product-image"
 				     alt="People">
 			</md-card-media>
 
 
 			<md-card-content>
+				<label for="department">Department</label>
 				<v-select :value="department"
-				          placeholder="Department"
+				          id="department"
+				          placeholder=""
 				          :taggable="true"
 				          :on-change="onChangeDepartment"
 				          :options="$root.departments"
 				></v-select>
+
+				<br>
+
+				<label for="grocery">Grocery</label>
+				<v-select :value="item"
+				          id="grocery"
+				          placeholder=""
+				          :options="departmentItems"
+				          :taggable="true"
+				          :on-change="onChangeItem">
+				</v-select>
 
 				<md-input-container>
 					<label>Qty</label>
 					<md-input type="number" v-model="qty"></md-input>
 				</md-input-container>
 
-				<v-select :value="item"
-				          placeholder="Item"
-				          :options="departmentItems"
-				          :taggable="true"
-				          :on-change="onChangeItem">
-				</v-select>
 			</md-card-content>
 
+			<div class="btn-holder">
+				<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">
+					<md-icon>delete</md-icon>
+				</md-button>
+			</div>
 
 		</md-card>
 	</md-whiteframe>
@@ -92,6 +105,11 @@
 				departmentItems: [],
 				innerHeight
 			}
+		},
+		created() {
+			var img = document.getElementById("product-image");
+
+			img.addEventListener('load', () => this.grabImageColors);
 		},
 		mounted() {
 			this.$root.$on("SHOW_ITEM_CARD", (payload) => {
@@ -213,6 +231,16 @@
 			handleResize() {
 				this.innerHeight = window.innerHeight;
 				//console.log("innerh:", this.innerHeight)
+			},
+			grabImageColors() {
+
+				let vibrant = new Vibrant(img);
+				let swatches = vibrant.swatches();
+				for (let swatch in swatches) {
+					if (swatches.hasOwnProperty(swatch) && swatches[swatch]) {
+						console.log(swatch, swatches[swatch].getHex());
+					}
+				}
 			}
 		}
 	}
@@ -222,6 +250,10 @@
 
 	.add-item-btn {
 		position: fixed !important;
+	}
+
+	button.md-button {
+		min-width: 30px;
 	}
 
 	.input-item-whiteframe {
@@ -242,18 +274,6 @@
 		color: rgba(255, 255, 255, .87);
 	}
 
-	.v-select .selected-tag {
-		color: #fff;
-		background-color: #2196f3;
-		border: none;
-		border-radius: 4px;
-		height: 26px;
-		margin: 4px 2px 0 3px;
-		padding: 2px .5em;
-		float: left;
-		line-height: 24px;
-		font-size: 1rem;
-	}
 
 	.dropdown-menu {
 		/*color: #000000 !important;*/
@@ -274,5 +294,11 @@
 		/*max-height: 9px;*/
 		overflow: hidden;
 	}
+
+	.btn-holder {
+		text-align: right;
+		margin: 0 8px;
+	}
+
 
 </style>
