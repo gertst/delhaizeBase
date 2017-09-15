@@ -9,17 +9,17 @@
 						<md-icon>menu</md-icon>
 					</md-button>
 
-					<h2 class="md-title">£</h2>
+					<h2 class="md-title">DelhaizeBase</h2>
 
 					<span style="flex: 1"></span>
 
-					<span @click="$root.$emit('SHOW_ORDER_PICKER')">Today</span>
+					<span @click="$root.$emit('SHOW_ORDER_PICKER')">{{orderDayRelative}}</span>
 
 					<md-button class="md-icon-button" @click.native="$root.$emit('SHOW_ORDER_PICKER')">
 						<md-icon>date_range</md-icon>
 					</md-button>
 
-					<md-avatar class="md-small avatar" @click.native="onAvatarClicked()">
+					<md-avatar class="md-small avatar" @click.native="$root.$emit('SHOW_ORDER_PICKER')">
 						<img :src="getCurrentOrderUserPhotoURL" >
 					</md-avatar>
 
@@ -72,6 +72,7 @@
 	import GroceriesView from './components/GroceriesView.vue'
 	import ItemCard from "./components/ItemCard.vue";
 	import OrderPicker from "./components/OrderPicker.vue";
+	import moment from "moment";
 
 	Vue.use(VueMaterial)
 
@@ -101,6 +102,19 @@
 		computed: {
 			getCurrentOrderUserPhotoURL() {
 				return this.$root.currentOrder && this.$root.currentOrder.paidByPhotoURL ? this.$root.currentOrder.paidByPhotoURL.split("/photo.jpg").join("/s64-c/photo.jpg") : "static/img/user.png"
+			},
+
+			orderDayRelative() {
+				if (this.$root.currentOrder) {
+					const today = moment().format("YYYY-MM-DD");
+					if (moment(this.$root.currentOrder[".key"]).format("YYYY-MM-DD") === today) {
+						return "Today";
+					} else {
+						return moment(this.$root.currentOrder[".key"]).from(moment(today));
+					}
+				} else {
+					return ""
+				}
 			},
 			stepData() {
 				let stepData = this.initialStepData;

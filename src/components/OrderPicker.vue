@@ -21,21 +21,23 @@
 
 		</md-toolbar>
 
-		<date-picker color="#F44336"
-		             :format="formatDate"
-		             :value="orderDate"
-		             v-model="orderDate"
-		             :activities="activities">
-		</date-picker>
+		<div class="panel">
+			<date-picker color="#F44336"
+			             :format="formatDate"
+			             :value="orderDate"
+			             v-model="orderDate"
+			             :activities="activities">
+			</date-picker>
 
-		<md-input-container>
-			<label for="shopper">Shopper</label>
-			<md-select name="shopper" id="shopper" v-model="shopper">
-				<md-option v-for="user in $root.shopperList" :key="user.userName" :value="user.userName">{{user.userName}}</md-option>
-			</md-select>
-		</md-input-container>
+			<md-input-container class="shopper-dropdown">
+				<label for="shopper">Shopper</label>
+				<md-select name="shopper" id="shopper" v-model="shopper">
+					<md-option v-for="user in $root.shopperList" :key="user.userName" :value="user.userName">{{user.userName}}</md-option>
+				</md-select>
+			</md-input-container>
 
-		<!--<md-button class="md-raised" click="openOrder()">Open</md-button>-->
+			<!--<md-button class="md-raised" click="openOrder()">Open</md-button>-->
+		</div>
 
 	</md-whiteframe>
 
@@ -56,8 +58,8 @@
 		data() {
 
 			return {
+				privateOrderDate: "",
 				isVisible: false,
-				orderDate: "",
 				shopper: "",
 				activities:{}
 			}
@@ -85,6 +87,22 @@
 
 		},
 		computed: {
+			orderDate: {
+				get() {
+					return this.privateOrderDate;
+				},
+				set(v) {
+					this.privateOrderDate = v;
+					this.$root.firebase.database().ref("orders/" + this.orderDate.substr(0, 10)).on('value', (snapshot) => {
+						if (snapshot.val()) {
+							//console.log("shopper", snapshot.val());
+							this.shopper = snapshot.val().paidBy
+						} else {
+							this.shopper = "";
+						}
+					});
+				}
+			},
 			photoURL() {
 				if (this.shopper) {
 					return this.$root.shopperList.find(shopper => {
@@ -101,12 +119,12 @@
 		},
 		methods: {
 			formatDate (date) {
-				console.log("formatDate", moment(date).format("YYYY-MM-DD"));
+				//console.log("formatDate", moment(date).format("YYYY-MM-DD"));
 				return moment(date).format("YYYY-MM-DD");
 			},
 
 			open() {
-				//console.log("open", this.shopper, this.photoURL);
+				console.log("open", this.shopper, this.photoURL);
 				this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).update({
 					"yyyy-mm": this.orderDate.substr(0, 7),
 					"paidBy": this.shopper,
@@ -131,6 +149,10 @@
 		background-color: white;
 	}
 
+	.panel {
+		margin: 8px auto;
+		width: 308px;
+	}
 
 
 
