@@ -1,6 +1,6 @@
 .md-card-content .v-select .selected-tag {
-    color: #fff;
-    background-color: #2196f3;
+    color: white;
+    background-color: #444444;
     border: none;
     border-radius: 40px;
     height: 26px;
@@ -13,4 +13,26 @@
 
 .input-item-whiteframe .v-select .dropdown-toggle {
     border: hidden;
+}
+
+.v-select .dropdown-menu {
+    background-color: #303030 !important;
+ }
+
+/*.v-select li {*/
+    /*color: #bfccbe !important;*/
+/*}*/
+
+.v-select .dropdown-menu > li > a {
+    color: #e6f5ff !important;
+    background: rgba(50, 50, 50, .1);
+}
+
+.v-select .dropdown-menu .active > a {
+    color: #2c98f0 !important;
+    background: rgba(50, 50, 50, .1);
+}
+.v-select .dropdown-menu > .highlight > a {
+    background: #2c98f0 !important;
+    color: #fff !important;
 }

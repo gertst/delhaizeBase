@@ -26,6 +26,7 @@
 			             :format="formatDate"
 			             :value="orderDate"
 			             v-model="orderDate"
+			             ref="datepicker"
 			             :activities="activities">
 			</date-picker>
 
@@ -84,6 +85,12 @@
 				});
 			});
 
+			this.$refs.datepicker.$on("DOUBLE_CLICK", () => {
+				console.log("double click");
+				this.open();
+			});
+			console.log("this.$refs.datepicker", this.$refs.datepicker);
+
 		},
 		computed: {
 			orderDate: {
@@ -127,7 +134,8 @@
 				this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).update({
 					"yyyy-mm": this.orderDate.substr(0, 7),
 					"paidBy": this.shopper,
-					"paidByPhotoURL": this.photoURL
+					"paidByPhotoURL": this.photoURL,
+					"state": "order"
 				}).then(() => {
 					this.$root.$emit("OPEN_ORDER", this.orderDate.substr(0, 10));
 					this.isVisible = false;

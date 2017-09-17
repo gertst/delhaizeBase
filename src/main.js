@@ -81,11 +81,14 @@ new Vue({
 	methods: {
 		openOrder(dateString) {
 			console.log("openorder", dateString);
-			this.$bindAsObject("currentOrder", this.firebase.database().ref('orders').child(dateString), null, function(e) {
+			this.$bindAsObject("currentOrder", this.firebase.database().ref('orders/' + dateString), null, function(e) {
 				if (this.currentOrder && this.currentOrder.hasOwnProperty("paidBy")) {
 					//this.currentOrder = this.orders[0];
-					this.$bindAsArray("currentOrderLines", this.firebase.database().ref('orderLines/' + dateString), null, function (e) {
+					this.$bindAsArray("currentOrderLines", this.firebase.database().ref('orderLines/' + dateString).orderByChild("state").equalTo("open"), null, function (e) {
 						console.log("order loaded");
+					});
+					this.firebase.database().ref('orderLines/' + dateString).update({
+						paidBy: this.currentOrder.paidBy
 					});
 				} else {
 					this.$root.$emit("SHOW_ORDER_PICKER");

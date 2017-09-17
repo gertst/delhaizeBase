@@ -28,14 +28,14 @@
 
 		</md-toolbar>
 
-		<md-card class="md-accent item-card">
+		<md-card id="item-card-panel" class="item-card dark-muted">
 
 			<md-card-media class="item-image" :style="imageStyle(innerHeight)">
 				<md-button class="md-icon-button add-image" @click.native="">
 					<md-icon>add_a_photo</md-icon>
 				</md-button>
 				<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg"
-				     class="product-image"
+				     id="product-image"
 				     alt="People">
 			</md-card-media>
 
@@ -66,6 +66,11 @@
 					<md-input type="number" v-model="qty"></md-input>
 				</md-input-container>
 
+				<md-input-container v-if="$root.currentOrder.state == 'settle'">
+					<label>Price</label>
+					<md-input type="number" v-model="price"></md-input>
+				</md-input-container>
+
 			</md-card-content>
 
 			<div class="btn-holder">
@@ -85,6 +90,7 @@
 	import MdInput from "../../node_modules/vue-material/src/components/mdInputContainer/mdInput.vue";
 	import vSelect from "vue-select"
 	import {snapshotToArray} from "../utils/firebaseUtils";
+	import * as Vibrant from 'node-vibrant'
 
 	export default {
 
@@ -100,6 +106,7 @@
 				currentItem: {},
 				department: null,
 				qty: 1,
+				price: 0,
 				item: "",
 				isEdit: true,
 				departmentItems: [],
@@ -107,11 +114,12 @@
 			}
 		},
 		created() {
-			var img = document.getElementById("product-image");
 
-			img.addEventListener('load', () => this.grabImageColors);
 		},
 		mounted() {
+
+
+
 			this.$root.$on("SHOW_ITEM_CARD", (payload) => {
 				if (payload) {
 					this.isEdit = true;
@@ -119,6 +127,7 @@
 					this.department = payload.department;
 					this.qty = payload.qty;
 					this.item = payload.name;
+					this.price = payload.price;
 					this.currentItem = payload;
 				} else {
 					//add new
@@ -126,16 +135,23 @@
 					this.department = "";
 					this.qty = 1;
 					this.item = "";
+					this.price = 0;
 					this.currentItem = {};
 				}
 				this.isVisible = true;
 				this.showNewDepartment = false;
+
+				this.grabImageColors();
+
 			});
 			window.addEventListener('resize', this.handleResize)
 
 		},
 		beforeDestroy() {
 			window.removeEventListener('resize', this.handleResize)
+			if (img) {
+				img.removeEventListener('load', () => this.grabImageColors);
+			}
 		},
 		computed: {
 
@@ -176,7 +192,7 @@
 						"department": this.department,
 						"name": this.item,
 						"qty": this.qty,
-						"price": ""
+						"price": this.price
 					});
 
 				} else { //add
@@ -188,7 +204,9 @@
 							"department": this.department,
 							"name": this.item,
 							"qty": this.qty,
-							"price": ""
+							"price": 0,
+							"checked": false,
+							"state": "open"
 						}
 					);
 				}
@@ -220,8 +238,11 @@
 
 			deleteItem() {
 				const key = this.currentItem['.key'];
-				this.$root.firebase.database().ref("orderLines/" + this.$root.currentOrder[".key"] + "/" + key).remove();
+				this.$root.firebase.database().ref("orderLines/" + this.$root.currentOrder[".key"] + "/" + key).update({
+					state: "deleted"
+				});
 				this.isVisible = false;
+				this.$parent.$refs.snackbar.open();
 			},
 
 			addNewDepartment() {
@@ -234,13 +255,47 @@
 			},
 			grabImageColors() {
 
-				let vibrant = new Vibrant(img);
-				let swatches = vibrant.swatches();
-				for (let swatch in swatches) {
-					if (swatches.hasOwnProperty(swatch) && swatches[swatch]) {
-						console.log(swatch, swatches[swatch].getHex());
+				console.log("grabImageColors");
+
+				var img = document.getElementById("product-image");
+
+				Vibrant.from(img.src).getPalette(function(err, swatches) {
+					if (err) throw err;
+					console.log(swatches);
+
+					if (swatches.DarkMuted) {
+						document.getElementById("item-card-panel").style.backgroundColor = swatches.DarkMuted.getHex();
+						var style = document.createElement('style');
+						style.type = 'text/css';
+						style.innerHTML = '.dark-muted { background-color:' + swatches.DarkMuted.getHex() + ' !important; }';
 					}
-				}
+
+					if (swatches.LightVibrant) {
+						document.getElementById("item-card-panel").style.color = swatches.LightVibrant.getHex();
+					}
+
+					if (swatches.DarkVibrant) {
+						//console.log(document.getElementsByClassName("dropdown-menu"));
+					}
+
+
+//					for (var key in swatches) {
+//						var swatch = swatches[key];
+//						if (swatch) {
+//							var hex = swatch.getHex();
+//							console.log(key + ": " + hex);
+//							//document.getElementById("item-card-panel").style.backgroundColor = hex;
+//						}
+//					}
+				});
+
+//				let vibrant = new Vibrant(img.src);
+//				let swatches = vibrant.swatches();
+//				for (let swatch in swatches) {
+//					if (swatches.hasOwnProperty(swatch) && swatches[swatch]) {
+//						console.log(swatch, swatches[swatch].getHex());
+//					}
+//				}
 			}
 		}
 	}
@@ -270,7 +325,7 @@
 	}
 
 	.md-theme-accent {
-		background-color: #e91e63;
+		background-color: #4b4b4b;
 		color: rgba(255, 255, 255, .87);
 	}
 
@@ -298,6 +353,13 @@
 	.btn-holder {
 		text-align: right;
 		margin: 0 8px;
+	}
+
+	#item-card-panel {
+		transition: color 600ms linear;
+		transition: background-color 600ms linear;
+		color: white;
+		background-color: #303030;
 	}
 
 

@@ -28,7 +28,7 @@
 			</md-toolbar>
 
 			<md-stepper @click.native="stepClick(this)">
-				<md-step md-label="Add" :md-editable="true"></md-step>
+				<md-step md-label="Order" :md-editable="true"></md-step>
 				<md-step md-label="Shop" :md-editable="true"></md-step>
 				<md-step md-label="Settle" :md-editable="true"></md-step>
 			</md-stepper>
@@ -56,6 +56,11 @@
 				</md-button>
 			</md-board>
 		</md-boards>
+
+		<md-snackbar md-position="bottom center" ref="snackbar" :md-duration="4000">
+			<span>Grocery deleted</span>
+			<md-button class="md-accent" @click="$refs.snackbar.close()">Undo</md-button>
+		</md-snackbar>
 
 	</div>
 
@@ -109,6 +114,7 @@
 					return ""
 				}
 			}
+
 		},
 
 		methods: {
