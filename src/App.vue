@@ -96,7 +96,7 @@
 			return {
 				root: this.$root,
 				initialStepData: [
-					{label:"Basket", disabled: false, icon:"shopping_basket"},
+					{label:"Order", disabled: false, icon:"shopping_basket"},
 					{label:"Shop", disabled: true, icon:"shopping_cart"},
 					{label:"Settle", disabled: true, icon:"attach_money"}
 				]
