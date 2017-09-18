@@ -36,3 +36,7 @@
     background: #2c98f0 !important;
     color: #fff !important;
 }
+
+.md-active .md-step-icons .md-step-icon {
+    background-color: #e91f63 !important;
+}

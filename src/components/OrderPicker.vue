@@ -134,8 +134,7 @@
 				this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).update({
 					"yyyy-mm": this.orderDate.substr(0, 7),
 					"paidBy": this.shopper,
-					"paidByPhotoURL": this.photoURL,
-					"state": "order"
+					"paidByPhotoURL": this.photoURL
 				}).then(() => {
 					this.$root.$emit("OPEN_ORDER", this.orderDate.substr(0, 10));
 					this.isVisible = false;

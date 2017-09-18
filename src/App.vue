@@ -27,11 +27,12 @@
 				</div>
 			</md-toolbar>
 
-			<md-stepper @click.native="stepClick(this)">
+			<md-stepper @click.native="stepClick(this)" ref="stepper">
 				<md-step v-for="step in stepData"
 						 :key="step.label"
 						 :md-label="step.label"
 						 :md-disabled="step.disabled"
+				         :md-active="step.active"
 						 :md-icon="step.icon">
 				</md-step>
 			</md-stepper>
@@ -96,9 +97,9 @@
 			return {
 				root: this.$root,
 				initialStepData: [
-					{label:"Order", disabled: false, icon:"shopping_basket"},
-					{label:"Shop", disabled: true, icon:"shopping_cart"},
-					{label:"Settle", disabled: true, icon:"attach_money"}
+					{label:"Order", id: "order", disabled: false, icon:"shopping_basket", active: false},
+					{label:"Shop", id: "shop", disabled: true, icon:"shopping_cart", active: false},
+					{label:"Settle", id: "settle", disabled: true, icon:"attach_money", active: false}
 				]
 			}
 		},
@@ -123,9 +124,12 @@
 			},
 			stepData() {
 				let stepData = this.initialStepData;
+				stepData[0].active = this.isActiveStep("order");
+				stepData[1].active = this.isActiveStep("shop");
+				stepData[2].active = this.isActiveStep("settle");
 				if (this.$root.currentOrderLines) {
-					stepData[1].disabled = this.$root.currentOrderLines.length == 0
-					stepData[2].disabled = this.$root.currentOrderLines.length == 0
+					stepData[1].disabled = this.$root.currentOrderLines.length === 0
+					stepData[2].disabled = this.$root.currentOrderLines.length === 0
 				}
 				return stepData
 			}
@@ -142,11 +146,22 @@
 			},
 
 			stepClick() {
-				console.log("step");
+				const stepId = this.stepData[this.$refs.stepper.activeStepNumber].id
+				console.log("step", stepId);
+				this.$root.firebase.database().ref("orders/" + this.$root.currentOrder[".key"]).update(
+					{
+						state: stepId
+					}
+				);
 			},
 
 			onAvatarClicked() {
 				console.log("avatar");
+			},
+
+			isActiveStep(stepId) {
+				console.log("getActiveStepNumber", stepId);
+				return this.$root.currentOrder ? this.$root.currentOrder.state === stepId : false;
 			}
 
 		},
@@ -158,6 +173,8 @@
 				warn: 'red',
 				background: 'white'
 			})
+
+
 
 			this.$root.firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
