@@ -259,7 +259,7 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
-		background-image: linear-gradient(to bottom,rgba(34, 150, 243, 0),rgba(34, 150, 243, 0.52));
+		background-image: linear-gradient(to bottom,rgba(34, 150, 243, 0), rgba(11, 11, 12, 0.52));
 		border-radius: inherit;
 		margin: 5px 5px !important;
 	}
@@ -744,7 +744,8 @@
 			selectedMonth: '',
 			selectedYear: '',
 			activities: [],
-			redrawId: 0
+			redrawId: 0,
+			lastClick: 0
 		}),
 
 		methods: {
@@ -773,18 +774,27 @@
 			 * @param {Object}
 			 */
 			setByDay (day) {
-				if (day.disabled) return
+				console.log(this.lastClick, new Date().getTime() - this.lastClick);
+				if (new Date().getTime() - this.lastClick < 400) {
+					this.$emit("DOUBLE_CLICK", day);
+				} else {
+					if (day.disabled) return
 
-				this.selectedYear = this.currentYear
+					this.selectedYear = this.currentYear
 
-				this.selectedDay = day.day - 1
+					this.selectedDay = day.day - 1
 
-				this.selectedMonth = this.currentMonth
+					this.selectedMonth = this.currentMonth
 
-				this.selectedDayOfWeek = new Date(this.selectedYear, this.selectedMonth, day.day).getDay();
+					this.selectedDayOfWeek = new Date(this.selectedYear, this.selectedMonth, day.day).getDay();
 
-				this.onInput();
+					this.onInput();
+
+				}
+				this.lastClick = new Date().getTime();
 			},
+
+
 
 			/**
 			 * Set the date by the given month.

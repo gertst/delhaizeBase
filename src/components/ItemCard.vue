@@ -8,10 +8,10 @@
 				<md-icon>close</md-icon>
 			</md-button>
 
-			<h2 v-if="!isEdit" class="md-title" style="flex: 1">Add an item</h2>
-			<h2 v-if="isEdit" class="md-title" style="flex: 1">Edit an item</h2>
+			<h2 v-if="!isEdit" class="md-title">Add an item</h2>
+			<h2 v-if="isEdit" class="md-title" >Edit an item</h2>
 
-			<!--<span style="flex: 1"></span>-->
+			<span style="flex: 1"></span>
 			<md-button @click="update()"
 			           :disabled="!(department && item && qty)">
 				<span>Save</span>
@@ -19,47 +19,65 @@
 			<!--<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">-->
 				<!--<md-icon class="">more_vert</md-icon>-->
 			<!--</md-button>-->
-			<md-menu md-direction="bottom left" v-if="isEdit">
-				<md-button md-menu-trigger style="min-width: 30px"><md-icon class="">more_vert</md-icon></md-button>
-				<md-menu-content>
-					<md-menu-item @click="deleteItem()">Delete Item</md-menu-item>
-				</md-menu-content>
-			</md-menu>
+			<!--<md-menu md-direction="bottom left" v-if="isEdit">-->
+				<!--<md-button md-menu-trigger style="min-width: 30px"><md-icon class="">more_vert</md-icon></md-button>-->
+				<!--<md-menu-content>-->
+					<!--<md-menu-item @click="deleteItem()">Delete Item</md-menu-item>-->
+				<!--</md-menu-content>-->
+			<!--</md-menu>-->
 
 		</md-toolbar>
 
-		<md-card class="md-accent item-card">
+		<md-card id="item-card-panel" class="item-card dark-muted">
 
 			<md-card-media class="item-image" :style="imageStyle(innerHeight)">
 				<md-button class="md-icon-button add-image" @click.native="">
 					<md-icon>add_a_photo</md-icon>
 				</md-button>
 				<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg"
+				     id="product-image"
 				     alt="People">
 			</md-card-media>
 
 
 			<md-card-content>
+				<label for="department">Department</label>
 				<v-select :value="department"
-				          placeholder="Department"
+				          id="department"
+				          placeholder=""
 				          :taggable="true"
 				          :on-change="onChangeDepartment"
 				          :options="$root.departments"
 				></v-select>
+
+				<br>
+
+				<label for="grocery">Grocery</label>
+				<v-select :value="item"
+				          id="grocery"
+				          placeholder=""
+				          :options="departmentItems"
+				          :taggable="true"
+				          :on-change="onChangeItem">
+				</v-select>
 
 				<md-input-container>
 					<label>Qty</label>
 					<md-input type="number" v-model="qty"></md-input>
 				</md-input-container>
 
-				<v-select :value="item"
-				          placeholder="Item"
-				          :options="departmentItems"
-				          :taggable="true"
-				          :on-change="onChangeItem">
-				</v-select>
+				<md-input-container v-if="$root.currentOrder.state == 'settle'">
+					<label>Price</label>
+					<md-input type="number" v-model="price"></md-input>
+				</md-input-container>
+
 			</md-card-content>
 
+			<div class="btn-holder">
+				<md-button v-if="isEdit" @click="deleteItem()" class="md-icon-button">
+					<md-icon>delete</md-icon>
+				</md-button>
+			</div>
 
 		</md-card>
 	</md-whiteframe>
@@ -72,6 +90,7 @@
 	import MdInput from "../../node_modules/vue-material/src/components/mdInputContainer/mdInput.vue";
 	import vSelect from "vue-select"
 	import {snapshotToArray} from "../utils/firebaseUtils";
+	import * as Vibrant from 'node-vibrant'
 
 	export default {
 
@@ -87,13 +106,20 @@
 				currentItem: {},
 				department: null,
 				qty: 1,
+				price: 0,
 				item: "",
 				isEdit: true,
 				departmentItems: [],
 				innerHeight
 			}
 		},
+		created() {
+
+		},
 		mounted() {
+
+
+
 			this.$root.$on("SHOW_ITEM_CARD", (payload) => {
 				if (payload) {
 					this.isEdit = true;
@@ -101,6 +127,7 @@
 					this.department = payload.department;
 					this.qty = payload.qty;
 					this.item = payload.name;
+					this.price = payload.price;
 					this.currentItem = payload;
 				} else {
 					//add new
@@ -108,16 +135,23 @@
 					this.department = "";
 					this.qty = 1;
 					this.item = "";
+					this.price = 0;
 					this.currentItem = {};
 				}
 				this.isVisible = true;
 				this.showNewDepartment = false;
+
+				this.grabImageColors();
+
 			});
 			window.addEventListener('resize', this.handleResize)
 
 		},
 		beforeDestroy() {
 			window.removeEventListener('resize', this.handleResize)
+			if (img) {
+				img.removeEventListener('load', () => this.grabImageColors);
+			}
 		},
 		computed: {
 
@@ -158,7 +192,7 @@
 						"department": this.department,
 						"name": this.item,
 						"qty": this.qty,
-						"price": ""
+						"price": this.price
 					});
 
 				} else { //add
@@ -170,7 +204,9 @@
 							"department": this.department,
 							"name": this.item,
 							"qty": this.qty,
-							"price": ""
+							"price": 0,
+							"checked": false,
+							"state": "open"
 						}
 					);
 				}
@@ -202,8 +238,11 @@
 
 			deleteItem() {
 				const key = this.currentItem['.key'];
-				this.$root.firebase.database().ref("orderLines/" + this.$root.currentOrder[".key"] + "/" + key).remove();
+				this.$root.firebase.database().ref("orderLines/" + this.$root.currentOrder[".key"] + "/" + key).update({
+					state: "deleted"
+				});
 				this.isVisible = false;
+				this.$parent.$refs.snackbar.open();
 			},
 
 			addNewDepartment() {
@@ -213,6 +252,50 @@
 			handleResize() {
 				this.innerHeight = window.innerHeight;
 				//console.log("innerh:", this.innerHeight)
+			},
+			grabImageColors() {
+
+				console.log("grabImageColors");
+
+				var img = document.getElementById("product-image");
+
+				Vibrant.from(img.src).getPalette(function(err, swatches) {
+					if (err) throw err;
+					console.log(swatches);
+
+					if (swatches.DarkMuted) {
+						document.getElementById("item-card-panel").style.backgroundColor = swatches.DarkMuted.getHex();
+						var style = document.createElement('style');
+						style.type = 'text/css';
+						style.innerHTML = '.dark-muted { background-color:' + swatches.DarkMuted.getHex() + ' !important; }';
+					}
+
+					if (swatches.LightVibrant) {
+						document.getElementById("item-card-panel").style.color = swatches.LightVibrant.getHex();
+					}
+
+					if (swatches.DarkVibrant) {
+						//console.log(document.getElementsByClassName("dropdown-menu"));
+					}
+
+
+//					for (var key in swatches) {
+//						var swatch = swatches[key];
+//						if (swatch) {
+//							var hex = swatch.getHex();
+//							console.log(key + ": " + hex);
+//							//document.getElementById("item-card-panel").style.backgroundColor = hex;
+//						}
+//					}
+				});
+
+//				let vibrant = new Vibrant(img.src);
+//				let swatches = vibrant.swatches();
+//				for (let swatch in swatches) {
+//					if (swatches.hasOwnProperty(swatch) && swatches[swatch]) {
+//						console.log(swatch, swatches[swatch].getHex());
+//					}
+//				}
 			}
 		}
 	}
@@ -222,6 +305,10 @@
 
 	.add-item-btn {
 		position: fixed !important;
+	}
+
+	button.md-button {
+		min-width: 30px;
 	}
 
 	.input-item-whiteframe {
@@ -238,22 +325,10 @@
 	}
 
 	.md-theme-accent {
-		background-color: #e91e63;
+		background-color: #4b4b4b;
 		color: rgba(255, 255, 255, .87);
 	}
 
-	.v-select .selected-tag {
-		color: #fff;
-		background-color: #2196f3;
-		border: none;
-		border-radius: 4px;
-		height: 26px;
-		margin: 4px 2px 0 3px;
-		padding: 2px .5em;
-		float: left;
-		line-height: 24px;
-		font-size: 1rem;
-	}
 
 	.dropdown-menu {
 		/*color: #000000 !important;*/
@@ -274,5 +349,18 @@
 		/*max-height: 9px;*/
 		overflow: hidden;
 	}
+
+	.btn-holder {
+		text-align: right;
+		margin: 0 8px;
+	}
+
+	#item-card-panel {
+		transition: color 600ms linear;
+		transition: background-color 600ms linear;
+		color: white;
+		background-color: #303030;
+	}
+
 
 </style>

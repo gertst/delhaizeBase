@@ -60,6 +60,11 @@
 			<!--</md-board>-->
 		<!--</md-boards>-->
 
+		<md-snackbar md-position="bottom center" ref="snackbar" :md-duration="4000">
+			<span>Grocery deleted</span>
+			<md-button class="md-accent" @click="$refs.snackbar.close()">Undo</md-button>
+		</md-snackbar>
+
 	</div>
 
 </template>
@@ -124,6 +129,7 @@
 				}
 				return stepData
 			}
+
 		},
 
 		methods: {
