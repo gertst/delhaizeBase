@@ -36,7 +36,7 @@
 				</md-button>
 				<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg"
 				     id="product-image"
-				     alt="People">
+				     alt="">
 			</md-card-media>
 
 

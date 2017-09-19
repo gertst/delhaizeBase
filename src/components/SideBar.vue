@@ -4,7 +4,7 @@
 			<md-list class="md-transparent">
 				<md-list-item class="md-avatar-list">
 					<md-avatar v-if="$root.user.email" class="md-large">
-						<img :src="$root.user.photoURL.split('/photo.jpg').join('/s128-c/photo.jpg')" alt="People">
+						<img :src="$root.user.photoURL.split('/photo.jpg').join('/s128-c/photo.jpg')" alt="$root.user.displayName">
 					</md-avatar>
 				</md-list-item>
 

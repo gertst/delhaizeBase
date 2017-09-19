@@ -49,7 +49,7 @@
 						</md-table-cell>
 						<md-table-cell>
 							<md-avatar class="md-small avatar">
-								<img :src="row.userPhoto" alt="People">
+								<img :src="row.userPhoto" alt="">
 							</md-avatar>
 						</md-table-cell>
 						<md-table-cell>
