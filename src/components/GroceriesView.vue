@@ -3,36 +3,18 @@
 	<div>
 
 		<md-table-card>
-			<!--<md-toolbar>
-				<h1 class="md-title">Groceries</h1>
-				<md-button class="md-icon-button">
-					<md-icon>filter_list</md-icon>
-				</md-button>
-
-				<md-button class="md-icon-button">
-					<md-icon>search</md-icon>
-				</md-button>
-			</md-toolbar>-->
-
-			<!--<md-table-alternate-header md-selected-label="selected">
-				<md-button class="md-icon-button">
-					<md-icon>delete</md-icon>
-				</md-button>
-
-				<md-button class="md-icon-button">
-					<md-icon>more_vert</md-icon>
-				</md-button>
-			</md-table-alternate-header>-->
 
 			<md-table md-sort="">
 				<md-table-header>
 					<md-table-row>
-						<md-table-head v-show="$root.currentOrder.state == 'shop' || $root.currentOrder.state == 'settle'" width="40px">&nbsp;</md-table-head>
-						<md-table-head width="40px">User</md-table-head>
-						<md-table-head>Department</md-table-head>
+						<md-table-head v-show="$root.currentOrder.state == 'shop' || $root.currentOrder.state == 'settle'" width="20px">&nbsp;</md-table-head>
+						<md-table-head width="30px">User</md-table-head>
+						<md-table-head v-show="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'shop'">
+							Department
+						</md-table-head>
 						<md-table-head width="30px">Qty</md-table-head>
 						<md-table-head>Item</md-table-head>
-						<md-table-head v-show="$root.currentOrder.state == 'settle'">Price</md-table-head>
+						<md-table-head v-show="$root.currentOrder.state == 'settle'" width="60px">Price</md-table-head>
 						<md-table-head v-show="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'settle'"
 						               width="30px">Edit
 						</md-table-head>
@@ -52,7 +34,7 @@
 								<img :src="row.userPhoto" alt="">
 							</md-avatar>
 						</md-table-cell>
-						<md-table-cell>
+						<md-table-cell v-show="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'shop'">
 							<span>{{ row.department }}</span>
 						</md-table-cell>
 
@@ -60,8 +42,13 @@
 							<span>{{ row.qty }}</span>
 						</md-table-cell>
 
-						<md-table-cell>
+						<md-table-cell v-show="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'shop'">
 							<span>{{ row.name }}</span>
+						</md-table-cell>
+
+						<md-table-cell v-show="$root.currentOrder.state == 'settle'">
+							<div class="department">{{ row.department }}</div>
+							<div class="name">{{ row.name }}</div>
 						</md-table-cell>
 
 						<md-table-cell v-if="$root.currentOrder.state == 'settle'">
@@ -170,6 +157,15 @@
 	}
 	.md-table .md-table-cell .md-table-cell-container {
 		padding: 6px 8px 6px 8px;
+	}
+
+	.md-table-cell .department {
+		font-size: 77%;
+		color: #2196f3;
+	}
+
+	.md-table .md-table-cell .md-table-cell-container {
+		padding: 6px 2px 6px 2px;
 	}
 
 </style>
