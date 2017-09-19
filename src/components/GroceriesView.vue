@@ -13,8 +13,8 @@
 							Department
 						</md-table-head>
 						<md-table-head width="30px">Qty</md-table-head>
-						<md-table-head>Item</md-table-head>
 						<md-table-head v-show="$root.currentOrder.state == 'settle'" width="60px">Price</md-table-head>
+						<md-table-head>Item</md-table-head>
 						<md-table-head v-show="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'settle'"
 						               width="30px">Edit
 						</md-table-head>
@@ -27,8 +27,9 @@
 					              :md-item="row">
 
 						<md-table-cell v-show="$root.currentOrder.state == 'shop' || $root.currentOrder.state == 'settle'">
-							<md-checkbox v-model="row.checked" @change="setChecked(row)"></md-checkbox>
+							<md-checkbox v-model="row.checked" @change="setChecked(row)" :disabled="$root.user.displayName !== $root.currentOrder.paidBy"></md-checkbox>
 						</md-table-cell>
+
 						<md-table-cell>
 							<md-avatar class="md-small avatar">
 								<img :src="row.userPhoto" alt="">
@@ -40,6 +41,14 @@
 
 						<md-table-cell :md-numeric="true">
 							<span>{{ row.qty }}</span>
+							<span class="multiply">x</span>
+						</md-table-cell>
+
+						<md-table-cell v-if="$root.currentOrder.state == 'settle'">
+							<md-input-container>
+								<!--<label>With label</label>-->
+								<md-input v-model="row.price" @change="setPrice(row)" type="number" :disabled="$root.user.displayName !== $root.currentOrder.paidBy"></md-input>
+							</md-input-container>
 						</md-table-cell>
 
 						<md-table-cell v-show="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'shop'">
@@ -49,13 +58,6 @@
 						<md-table-cell v-show="$root.currentOrder.state == 'settle'">
 							<div class="department">{{ row.department }}</div>
 							<div class="name">{{ row.name }}</div>
-						</md-table-cell>
-
-						<md-table-cell v-if="$root.currentOrder.state == 'settle'">
-							<md-input-container>
-								<!--<label>With label</label>-->
-								<md-input v-model="row.price" @change="setPrice(row)" type="number"></md-input>
-							</md-input-container>
 						</md-table-cell>
 
 						<md-table-cell v-if="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'settle'">
@@ -168,4 +170,7 @@
 		padding: 6px 2px 6px 2px;
 	}
 
+	.multiply {
+		margin-left: 2px;
+	}
 </style>

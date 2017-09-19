@@ -9,25 +9,26 @@
 						<md-icon>menu</md-icon>
 					</md-button>
 
-					<h2 class="md-title">DelhaizeBase</h2>
+					<!--<h2 class="md-title">DelhaizeBase</h2>-->
+					<span>{{getTitle}}</span>
 
 					<span style="flex: 1"></span>
 
-					<span @click="$root.$emit('SHOW_ORDER_PICKER')">{{orderDayRelative}}</span>
+					<span>{{orderDayRelative}}</span>
 
 					<md-button class="md-icon-button" @click.native="$root.$emit('SHOW_ORDER_PICKER')">
 						<md-icon>date_range</md-icon>
 					</md-button>
 
-					<md-avatar class="md-small avatar" @click.native="$root.$emit('SHOW_ORDER_PICKER')">
-						<img :src="getCurrentOrderUserPhotoURL" >
-					</md-avatar>
+					<!--<md-avatar class="md-small avatar" @click.native="$root.$emit('SHOW_ORDER_PICKER')">-->
+						<!--<img :src="getCurrentOrderUserPhotoURL" >-->
+					<!--</md-avatar>-->
 
 
 				</div>
 			</md-toolbar>
 
-			<md-stepper @click.native="stepClick(this)" ref="stepper">
+			<md-stepper @click.native="stepClick(this)" ref="stepper" v-show="$root.user.displayName === $root.currentOrder.paidBy">
 				<md-step v-for="step in stepData"
 						 :key="step.label"
 						 :md-label="step.label"
@@ -122,6 +123,20 @@
 					return ""
 				}
 			},
+
+			getTitle() {
+				console.log("getTitle", this.$root.currentOrder);
+				if (this.$root.currentOrder !== null) {
+					if (this.$root.currentOrder.paidBy) {
+						return this.$root.currentOrder.paidBy;
+					} else {
+						return "No shopper yet";
+					}
+				} else {
+					return "DelhaizeBase"
+				}
+			},
+
 			stepData() {
 				let stepData = this.initialStepData;
 				stepData[0].active = this.isActiveStep("order");
