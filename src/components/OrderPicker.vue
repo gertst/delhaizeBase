@@ -71,13 +71,15 @@
 				}
 				if (this.$root.currentOrder && this.$root.currentOrder[".key"]) {
 					this.orderDate = this.$root.currentOrder[".key"];
-					console.log("orderdate", this.orderDate);
 				}
 				if (this.$root.currentOrder && this.$root.currentOrder.paidBy) {
 					this.shopper = this.$root.currentOrder.paidBy;
 				}
+				this.state = this.$root.currentOrder.state;
+				if (!this.state) {
+					this.state = "order";
+				}
 				this.isVisible = true;
-				console.log("SHOW_ORDER_PICKER");
 				this.$bindAsArray("activities", this.$root.firebase.database().ref().child('orders')
 					.orderByChild("yyyy-mm").equalTo(this.orderDate.substr(0, 7)), null, (e) => {
 					console.log("new activities loaded", this.$root);
@@ -86,10 +88,9 @@
 			});
 
 			this.$refs.datepicker.$on("DOUBLE_CLICK", () => {
-				console.log("double click");
 				this.open();
 			});
-			console.log("this.$refs.datepicker", this.$refs.datepicker);
+
 
 		},
 		computed: {
@@ -134,7 +135,8 @@
 				this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).update({
 					"yyyy-mm": this.orderDate.substr(0, 7),
 					"paidBy": this.shopper,
-					"paidByPhotoURL": this.photoURL
+					"paidByPhotoURL": this.photoURL,
+					"state": this.state
 				}).then(() => {
 					this.$root.$emit("OPEN_ORDER", this.orderDate.substr(0, 10));
 					this.isVisible = false;
@@ -156,8 +158,8 @@
 	}
 
 	.panel {
-		margin: 8px auto;
-		width: 308px;
+		margin: 8px 8px;
+		/*width: 350px;*/
 	}
 
 	.btn-holder {
@@ -165,6 +167,11 @@
 	}
 	.btn-open {
 		right: 0;
+	}
+
+	.shopper-dropdown {
+		margin: 4px auto;
+		width: 300px;
 	}
 
 
