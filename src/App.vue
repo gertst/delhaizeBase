@@ -10,11 +10,9 @@
 					</md-button>
 
 					<!--<h2 class="md-title">DelhaizeBase</h2>-->
-					<span>{{getTitle}}</span>
-
 					<span style="flex: 1"></span>
 
-					<span>{{orderDayRelative}}</span>
+					<span>{{getTitle}}, {{orderDayRelative}}</span>
 
 					<md-button class="md-icon-button" @click.native="$root.$emit('SHOW_ORDER_PICKER')">
 						<md-icon>date_range</md-icon>
@@ -28,7 +26,7 @@
 				</div>
 			</md-toolbar>
 
-			<md-stepper @click.native="stepClick(this)" ref="stepper" v-show="$root.user.displayName === $root.currentOrder.paidBy">
+			<md-stepper @click.native="stepClick(this)" ref="stepper" v-show="$root.currentOrder && $root.user.displayName === $root.currentOrder.paidBy">
 				<md-step v-for="step in stepData"
 						 :key="step.label"
 						 :md-label="step.label"
@@ -61,6 +59,21 @@
 				<!--</md-button>-->
 			<!--</md-board>-->
 		<!--</md-boards>-->
+
+		<md-toolbar class="md-dense bottom-bar"
+		            v-show="$root.currentOrder.state == 'settle'">
+
+			<span style="flex: 1"></span>
+			<span>{{$root.currentOrder && $root.currentOrder.settled ? 'Payment Settled' : 'Unfinished payment.'}}</span>
+
+			<md-button class="md-icon-button" v-show="$root.currentOrder && $root.user.displayName === $root.currentOrder.paidBy">
+				<md-icon @click.native="switchSettle()">{{ $root.currentOrder && $root.currentOrder.settled ? 'lock_closed' : 'lock_open' }}</md-icon>
+			</md-button>
+			<md-icon v-show="$root.currentOrder && $root.user.displayName !== $root.currentOrder.paidBy">
+				{{ $root.currentOrder && $root.currentOrder.settled ? 'lock_closed' : 'lock_open' }}
+			</md-icon>
+
+		</md-toolbar>
 
 		<md-snackbar md-position="bottom center" ref="snackbar" :md-duration="4000">
 			<span>Grocery deleted</span>
@@ -115,7 +128,7 @@
 				if (this.$root.currentOrder) {
 					const today = moment().format("YYYY-MM-DD");
 					if (moment(this.$root.currentOrder[".key"]).format("YYYY-MM-DD") === today) {
-						return "Today";
+						return "today";
 					} else {
 						return moment(this.$root.currentOrder[".key"]).from(moment(today));
 					}
@@ -177,6 +190,14 @@
 			isActiveStep(stepId) {
 				console.log("getActiveStepNumber", stepId);
 				return this.$root.currentOrder ? this.$root.currentOrder.state === stepId : false;
+			},
+
+			switchSettle() {
+				this.$root.firebase.database().ref("orders/" + this.$root.currentOrder[".key"]).update(
+					{
+						settled: !this.$root.currentOrder.settled
+					}
+				);
 			}
 
 		},
@@ -288,6 +309,13 @@
 		height: 100%;
 		position: fixed;
 		padding: 0 0px;
+	}
+
+	.bottom-bar {
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		z-index: 10;
 	}
 
 </style>

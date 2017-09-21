@@ -7,7 +7,8 @@
 			<md-table md-sort="">
 				<md-table-header>
 					<md-table-row>
-						<md-table-head v-show="$root.currentOrder.state == 'shop' || $root.currentOrder.state == 'settle'" width="20px">&nbsp;</md-table-head>
+						<md-table-head v-show="($root.currentOrder.state == 'shop' || $root.currentOrder.state == 'settle') && !$root.currentOrder.settled"
+						               width="20px">&nbsp;</md-table-head>
 						<md-table-head width="30px">User</md-table-head>
 						<md-table-head v-show="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'shop'">
 							Department
@@ -15,7 +16,7 @@
 						<md-table-head width="30px">Qty</md-table-head>
 						<md-table-head v-show="$root.currentOrder.state == 'settle'" width="60px">Price</md-table-head>
 						<md-table-head>Item</md-table-head>
-						<md-table-head v-show="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'settle'"
+						<md-table-head v-show="($root.currentOrder.state == 'order' || $root.currentOrder.state == 'settle') && !$root.currentOrder.settled"
 						               width="30px">Edit
 						</md-table-head>
 					</md-table-row>
@@ -26,7 +27,7 @@
 					              :key="rowIndex"
 					              :md-item="row">
 
-						<md-table-cell v-show="$root.currentOrder.state == 'shop' || $root.currentOrder.state == 'settle'">
+						<md-table-cell v-show="($root.currentOrder.state == 'shop' || $root.currentOrder.state == 'settle') && !$root.currentOrder.settled">
 							<md-checkbox v-model="row.checked" @change="setChecked(row)" :disabled="$root.user.displayName !== $root.currentOrder.paidBy"></md-checkbox>
 						</md-table-cell>
 
@@ -47,7 +48,7 @@
 						<md-table-cell v-if="$root.currentOrder.state == 'settle'">
 							<md-input-container>
 								<!--<label>With label</label>-->
-								<md-input v-model="row.price" @change="setPrice(row)" type="number" :disabled="$root.user.displayName !== $root.currentOrder.paidBy"></md-input>
+								<md-input v-model="row.price" @change="setPrice(row)" type="number" :disabled="$root.user.displayName !== $root.currentOrder.paidBy || $root.currentOrder.settled"></md-input>
 							</md-input-container>
 						</md-table-cell>
 
@@ -60,7 +61,7 @@
 							<div class="name">{{ row.name }}</div>
 						</md-table-cell>
 
-						<md-table-cell v-if="$root.currentOrder.state == 'order' || $root.currentOrder.state == 'settle'">
+						<md-table-cell v-if="($root.currentOrder.state == 'order' || $root.currentOrder.state == 'settle') && !$root.currentOrder.settled">
 							<md-button
 									v-show="canEdit(row)"
 									@click="editItem(row)" class="md-icon-button">
@@ -156,6 +157,10 @@
 	.md-table-head-text {
 		padding-right: 4px !important;
 		padding-left: 4px !important;
+	}
+
+	.md-table-card {
+		padding: 0 6px;
 	}
 	.md-table .md-table-cell .md-table-cell-container {
 		padding: 6px 8px 6px 8px;
