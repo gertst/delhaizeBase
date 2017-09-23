@@ -205,6 +205,20 @@
 		border-radius: 50%;
 		color: #fff;
 		cursor: pointer;
+		border-radius: 50%;
+		border-color: red;
+		border-width: 2px;
+		border-style: solid !important;
+	}
+
+	.calendar-body td.unsettled {
+		border-radius: 50%;
+		color: #fff;
+		cursor: pointer;
+		border-radius: 50%;
+		border-color: red;
+		border-width: 2px;
+		border-style: dotted;
 	}
 
 	.calendar-year-select {
@@ -338,12 +352,12 @@
 						<tbody>
 						<tr v-for="days in calendar">
 							<td :style="{
-			                      'color': day.currentDay && ! day.selected ? color : '',
-			                      'background-color': day.selected ? color : ''
+			                      'color': day.currentDay || day.selected ? color : ''
 			                    }"
 							    :class="{
 			                      'current-day': day.currentDay,
 			                      'disabled': day.disabled,
+			                      'unsettled': day.activity && !day.activity.settled,
 			                      'selected': day.selected,
 			                      'activity': day.activity
 			                    }"

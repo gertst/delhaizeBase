@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f87314d1-e6e2-4a68-b521-0316aac8b4f3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/App.vue" afterPath="$PROJECT_DIR$/src/App.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/GroceriesView.vue" afterPath="$PROJECT_DIR$/src/components/GroceriesView.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/ItemCard.vue" afterPath="$PROJECT_DIR$/src/components/ItemCard.vue" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/DatePicker.vue" afterPath="$PROJECT_DIR$/src/components/DatePicker.vue" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,15 +26,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="App.vue" pinned="false" current-in-tab="true">
+      <file leaf-file-name="App.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/App.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="66" column="110" lean-forward="false" selection-start-line="66" selection-start-column="110" selection-end-line="66" selection-end-column="110" />
+            <state relative-caret-position="292">
+              <caret line="70" column="24" lean-forward="true" selection-start-line="70" selection-start-column="24" selection-end-line="70" selection-end-column="24" />
               <folding>
                 <element signature="n#style#0;n#span#0;n#div#0;n#md-toolbar#0;n#md-whiteframe#0;n#div#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#0;n#md-toolbar#0;n#div#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="e#2879#2900#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DatePicker.vue" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/components/DatePicker.vue">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="194">
+              <caret line="359" column="78" lean-forward="false" selection-start-line="359" selection-start-column="78" selection-end-line="359" selection-end-column="78" />
+              <folding>
+                <element signature="e#10437#15355#0" expanded="false" />
+                <element signature="e#15371#15623#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -113,16 +123,11 @@
       <file leaf-file-name="OrderPicker.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/OrderPicker.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="137" column="51" lean-forward="false" selection-start-line="137" selection-start-column="51" selection-end-line="137" selection-end-column="51" />
+            <state relative-caret-position="194">
+              <caret line="85" column="80" lean-forward="false" selection-start-line="85" selection-start-column="70" selection-end-line="85" selection-end-column="80" />
               <folding>
                 <element signature="n#style#0;n#h2#0;n#md-toolbar#0;n#md-whiteframe#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="e#1176#1231#0" expanded="true" />
-                <marker date="1505842339000" expanded="true" signature="1323:1714" ph="{...}" />
-                <marker date="1505842339000" expanded="true" signature="1503:1714" ph="{...}" />
-                <marker date="1505842339000" expanded="true" signature="1557:1714" ph="{...}" />
-                <marker date="1505842339000" expanded="true" signature="1653:1714" ph="{...}" />
-                <marker date="1505842339000" expanded="true" signature="3976:3990" ph="..." />
               </folding>
             </state>
           </provider>
@@ -149,15 +154,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>databa</find>
-      <find>md-test</find>
-      <find>md-table-head-text</find>
-      <find>css</find>
-      <find>isvis</find>
-      <find>ths</find>
-      <find>canEdit</find>
-      <find>paid</find>
-      <find>Vibrant</find>
       <find>click</find>
       <find>setByDay</find>
       <find>doubleClick</find>
@@ -179,6 +175,15 @@
       <find>getLockIcon</find>
       <find>currentOrder</find>
       <find>£</find>
+      <find>background-c</find>
+      <find>solid</find>
+      <find>active</find>
+      <find>calendar</find>
+      <find>activity</find>
+      <find>activities</find>
+      <find>calenda</find>
+      <find>selected</find>
+      <find>unsettled</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -222,7 +227,6 @@
         <option value="$PROJECT_DIR$/src/components/vue2-calendar/src/calendar.vue" />
         <option value="$PROJECT_DIR$/node_modules/vue-select/dist/vue-select.js" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/src/components/DatePicker.vue" />
         <option value="$PROJECT_DIR$/src/main.js" />
         <option value="$PROJECT_DIR$/src/components/OrderPicker.vue" />
         <option value="$PROJECT_DIR$/static/css/app.css" />
@@ -230,6 +234,7 @@
         <option value="$PROJECT_DIR$/src/components/GroceriesView.vue" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/src/App.vue" />
+        <option value="$PROJECT_DIR$/src/components/DatePicker.vue" />
       </list>
     </option>
   </component>
@@ -287,87 +292,6 @@
             <path>
               <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
               <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="lodash" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node-vibrant" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node-vibrant" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="dist" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node-vibrant" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="dist" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vibrant.js" type="620a8d5e:NestingTreeNode" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vue-select" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vue-select" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="config" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vue-select" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="dist" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vue-select" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="dist" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vue-select.js" type="620a8d5e:NestingTreeNode" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vuefire" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vuefire" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="dist" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="node_modules" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vuefire" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="dist" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="vuefire.js" type="620a8d5e:NestingTreeNode" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="public" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
             <path>
@@ -397,19 +321,6 @@
               <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="static" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="css" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="static" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="img" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="fireBase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="delhaizeBase" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="static" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="img" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="icons" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
           </expand>
           <select />
@@ -590,12 +501,12 @@
       <workItem from="1504709543267" duration="362000" />
       <workItem from="1504710119314" duration="523000" />
       <workItem from="1504772847014" duration="52000" />
-      <workItem from="1504805322217" duration="81128000" />
+      <workItem from="1504805322217" duration="83984000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="246151000" />
+    <option name="totallyTimeSpent" value="249007000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1390" height="872" extended-state="0" />
@@ -882,17 +793,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/DatePicker.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="778" column="45" lean-forward="true" selection-start-line="778" selection-start-column="20" selection-end-line="778" selection-end-column="45" />
-          <folding>
-            <element signature="e#10157#15075#0" expanded="false" />
-            <element signature="e#15091#15343#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/SideBar.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -918,22 +818,6 @@
             <marker date="1505842339000" expanded="true" signature="1926:2019" ph="{...}" />
             <marker date="1505842339000" expanded="true" signature="1941:2015" ph="{...}" />
             <marker date="1505842339000" expanded="true" signature="2042:2052" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/OrderPicker.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="137" column="51" lean-forward="false" selection-start-line="137" selection-start-column="51" selection-end-line="137" selection-end-column="51" />
-          <folding>
-            <element signature="n#style#0;n#h2#0;n#md-toolbar#0;n#md-whiteframe#0;n#template#0;n#!!top" expanded="true" />
-            <element signature="e#1176#1231#0" expanded="true" />
-            <marker date="1505842339000" expanded="true" signature="1323:1714" ph="{...}" />
-            <marker date="1505842339000" expanded="true" signature="1503:1714" ph="{...}" />
-            <marker date="1505842339000" expanded="true" signature="1557:1714" ph="{...}" />
-            <marker date="1505842339000" expanded="true" signature="1653:1714" ph="{...}" />
-            <marker date="1505842339000" expanded="true" signature="3976:3990" ph="..." />
           </folding>
         </state>
       </provider>
@@ -989,12 +873,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/App.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="66" column="110" lean-forward="false" selection-start-line="66" selection-start-column="110" selection-end-line="66" selection-end-column="110" />
+        <state relative-caret-position="292">
+          <caret line="70" column="24" lean-forward="true" selection-start-line="70" selection-start-column="24" selection-end-line="70" selection-end-column="24" />
           <folding>
             <element signature="n#style#0;n#span#0;n#div#0;n#md-toolbar#0;n#md-whiteframe#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#md-toolbar#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="e#2879#2900#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/OrderPicker.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="85" column="80" lean-forward="false" selection-start-line="85" selection-start-column="70" selection-end-line="85" selection-end-column="80" />
+          <folding>
+            <element signature="n#style#0;n#h2#0;n#md-toolbar#0;n#md-whiteframe#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="e#1176#1231#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/DatePicker.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="359" column="78" lean-forward="false" selection-start-line="359" selection-start-column="78" selection-end-line="359" selection-end-column="78" />
+          <folding>
+            <element signature="e#10437#15355#0" expanded="false" />
+            <element signature="e#15371#15623#0" expanded="false" />
           </folding>
         </state>
       </provider>
