@@ -1,0 +1,62 @@
+[debug] [2017-09-25T19:57:34.756Z] ----------------------------------------------------------------------
+[debug] [2017-09-25T19:57:34.758Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2017-09-25T19:57:34.759Z] CLI Version:   3.12.0
+[debug] [2017-09-25T19:57:34.759Z] Platform:      darwin
+[debug] [2017-09-25T19:57:34.759Z] Node Version:  v6.11.1
+[debug] [2017-09-25T19:57:34.759Z] Time:          Mon Sep 25 2017 21:57:34 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:34.759Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-09-25T19:57:34.781Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-09-25T19:57:34.781Z] > authorizing via signed-in user
+[debug] [2017-09-25T19:57:34.783Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2017-09-25T19:57:34.783Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token { refresh_token: '1/DBpAEcFTAhFCASDQ0C5IIcW4tAgBL9voAHsP3LIYGIA',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Mon Sep 25 2017 21:57:34 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:34.964Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-25T19:57:34.971Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/delhaizebase  
+ Mon Sep 25 2017 21:57:34 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:35.789Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-25T19:57:35.790Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/delhaizebase/tokens  
+ Mon Sep 25 2017 21:57:35 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:36.563Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'delhaizebase'...
+[info] 
+[info] i  deploying functions, hosting
+[debug] [2017-09-25T19:57:38.179Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "firebase-admin": "~5.2.1",
+    "firebase-functions": "^0.6.2"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[info] i  runtimeconfig: ensuring necessary APIs are enabled...
+[debug] [2017-09-25T19:57:38.181Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/delhaizebase?view=CONSUMER_VIEW  
+ Mon Sep 25 2017 21:57:38 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:38.182Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/delhaizebase?view=CONSUMER_VIEW  
+ Mon Sep 25 2017 21:57:38 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:39.241Z] <<< HTTP RESPONSE 200
+[info] ✔  runtimeconfig: all necessary APIs are enabled
+[debug] [2017-09-25T19:57:39.379Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2017-09-25T19:57:39.381Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/delhaizebase  
+ Mon Sep 25 2017 21:57:39 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:39.382Z] >>> HTTP REQUEST GET https://apikeys.googleapis.com/v1/projects/delhaizebase/apiKeys  
+ Mon Sep 25 2017 21:57:39 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:40.278Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-25T19:57:40.281Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2017-09-25T19:57:43.193Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/delhaizebase/configs  
+ Mon Sep 25 2017 21:57:43 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:43.998Z] <<< HTTP RESPONSE 200
+[info] i  hosting: preparing dist directory for upload...
+[debug] [2017-09-25T19:57:44.749Z] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/delhaizebase/uploads/-KuubSUvDPXQSMopdubC?fileCount=23&message=  
+ Mon Sep 25 2017 21:57:44 GMT+0200 (CEST)
+[debug] [2017-09-25T19:57:55.015Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-25T19:57:55.016Z] [hosting] .tgz uploaded successfully, waiting for extraction

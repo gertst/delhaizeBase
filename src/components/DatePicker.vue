@@ -202,20 +202,18 @@
 	}
 
 	.calendar-body td.selected {
-		border-radius: 50%;
+		border-radius: 20%;
 		color: #fff;
 		cursor: pointer;
-		border-radius: 50%;
 		border-color: red;
 		border-width: 2px;
 		border-style: solid !important;
 	}
 
 	.calendar-body td.unsettled {
-		border-radius: 50%;
 		color: #fff;
 		cursor: pointer;
-		border-radius: 50%;
+		border-radius: 20%;
 		border-color: red;
 		border-width: 2px;
 		border-style: dotted;
@@ -274,7 +272,7 @@
 		bottom: 0;
 		left: 0;
 		background-image: linear-gradient(to bottom,rgba(34, 150, 243, 0), rgba(11, 11, 12, 0.52));
-		border-radius: inherit;
+		border-radius: 50%;
 		margin: 5px 5px !important;
 	}
 	.activity-label {

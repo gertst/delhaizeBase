@@ -31,9 +31,11 @@
 			</date-picker>
 
 			<md-input-container class="shopper-dropdown">
-				<label for="shopper">Shopper</label>
-				<md-select name="shopper" id="shopper" v-model="shopper">
-					<md-option v-for="user in $root.shopperList" :key="user.userName" :value="user.userName">{{user.userName}}</md-option>
+				<label for="shopper">
+					Shopper - {{ this.settled ? 'settled' : 'not settled' }}
+				</label>
+				<md-select name="shopper" id="shopper" v-model="shopper" :disabled="settled">
+					<md-option v-for="user in $root.shopperList" :key="user.userName" :value="user.userName">{{user.userName}} (€ {{debetAmount(user)}})</md-option>
 				</md-select>
 			</md-input-container>
 
@@ -61,7 +63,8 @@
 				privateOrderDate: "",
 				isVisible: false,
 				shopper: "",
-				activities:{}
+				activities:{},
+				settled: false
 			}
 		},
 		mounted() {
@@ -69,10 +72,10 @@
 				if (payload) {
 
 				}
-				if (this.$root.currentOrder && this.$root.currentOrder[".key"]) {
+				if (this.$root.currentOrder[".key"]) {
 					this.orderDate = this.$root.currentOrder[".key"];
 				}
-				if (this.$root.currentOrder && this.$root.currentOrder.paidBy) {
+				if (this.$root.currentOrder.paidBy) {
 					this.shopper = this.$root.currentOrder.paidBy;
 				}
 				this.state = this.$root.currentOrder.state;
@@ -82,7 +85,7 @@
 				this.isVisible = true;
 				this.$bindAsArray("activities", this.$root.firebase.database().ref().child('orders')
 					.orderByChild("yyyy-mm").equalTo(this.orderDate.substr(0, 7)), null, (e) => {
-					console.log("new activities loaded", this.$root);
+					//console.log("new activities loaded", this.$root);
 					this.$root.$emit("MONTH_ACTIVITIES_UPDATED", this.activities);
 				});
 			});
@@ -103,9 +106,11 @@
 					this.$root.firebase.database().ref("orders/" + this.orderDate.substr(0, 10)).on('value', (snapshot) => {
 						if (snapshot.val()) {
 							//console.log("shopper", snapshot.val());
-							this.shopper = snapshot.val().paidBy
+							this.shopper = snapshot.val().paidBy;
+							this.settled = snapshot.val().settled;
 						} else {
 							this.shopper = "";
+							this.settled = false;
 						}
 					});
 				}
@@ -141,6 +146,13 @@
 					this.$root.$emit("OPEN_ORDER", this.orderDate.substr(0, 10));
 					this.isVisible = false;
 				});
+			},
+			debetAmount(user) {
+				if (user.debet) {
+					return user.debet.amount;
+				} else {
+					return 0;
+				}
 			}
 		}
 	}

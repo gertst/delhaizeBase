@@ -25,7 +25,7 @@ new Vue({
 	data: {
 		firebase: null,
 		orders: null,
-		currentOrder: null,
+		currentOrder: {},
 		currentOrderLines: null,
 		departments: [],
 		shopperList: [],
@@ -63,14 +63,31 @@ new Vue({
 		});
 
 		//get users that have isShopper to true
-		this.firebase.database().ref('users').orderByChild("isShopper").equalTo(true).on('value', function(snapshot) {
-			let arr = [];
-			Object.values(snapshot.val()).forEach(item => {
-				arr.push(item);
+
+		this.$bindAsArray("shopperList", this.firebase.database().ref('users').orderByChild("isShopper").equalTo(true), null, (e) => {
+			console.log("shopperList loaded");
+			this.shopperList.sort(function (a, b) {
+				if (!a.debet) a.debet = {amount: 0};
+				if (!b.debet) b.debet = {amount: 0};
+				return a.debet.amount - b.debet.amount;
 			});
-			self.shopperList = arr;
-			//console.log("val:", self.shopperList);
 		});
+
+
+		// this.firebase.database().ref('users').orderByChild("isShopper").equalTo(true).on('value', function(snapshot) {
+		// 	let arr = [];
+		// 	Object.values(snapshot.val()).forEach(item => {
+		// 		arr.push(item);
+		// 	});
+		// 	//sort by debet
+		// 	arr = arr.sort(function (a, b) {
+		// 		if (!a.debet) a.debet = {amount: 0};
+		// 		if (!b.debet) b.debet = {amount: 0};
+		// 		return a.debet.amount - b.debet.amount;
+		// 	});
+		// 	self.shopperList = arr;
+		// 	//console.log("val:", self.shopperList);
+		// });
 
 		this.$on("OPEN_ORDER", dateString => {
 			this.openOrder(dateString);
@@ -82,7 +99,7 @@ new Vue({
 		openOrder(dateString) {
 			console.log("open order", dateString);
 			this.$bindAsObject("currentOrder", this.firebase.database().ref('orders/' + dateString), null, function(e) {
-				if (this.currentOrder && this.currentOrder.hasOwnProperty("paidBy")) {
+				if (this.currentOrder.hasOwnProperty("paidBy")) {
 					//this.currentOrder = this.orders[0];
 					this.$bindAsArray("currentOrderLines", this.firebase.database().ref('orderLines/' + dateString).orderByChild("state").equalTo("open"), null, function (e) {
 						console.log("order loaded");

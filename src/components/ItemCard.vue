@@ -66,7 +66,7 @@
 					<md-input type="number" v-model="qty"></md-input>
 				</md-input-container>
 
-				<md-input-container v-if="$root.currentOrder && $root.currentOrder.state == 'settle'">
+				<md-input-container v-if="$root.currentOrder.state == 'settle'">
 					<label>Price</label>
 					<md-input type="number" v-model="price"></md-input>
 				</md-input-container>

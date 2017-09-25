@@ -25,6 +25,7 @@
 				<md-table-body>
 					<md-table-row v-for="(row, rowIndex) in $root.currentOrderLines"
 					              :key="rowIndex"
+					              :class="{'disabled': $root.currentOrder.state == 'settle' && !row.checked}"
 					              :md-item="row">
 
 						<md-table-cell v-show="($root.currentOrder.state == 'shop' || $root.currentOrder.state == 'settle') && !$root.currentOrder.settled">
@@ -73,7 +74,7 @@
 				</md-table-body>
 			</md-table>
 
-			<md-button @click="addItem()" v-if="$root.currentOrder.state == 'order'" class="add-item-btn md-fab md-fab-bottom-right">
+			<md-button @click="addItem()" v-if="!$root.currentOrder.settled && $root.currentOrder.state == 'order'" class="add-item-btn md-fab md-fab-bottom-right">
 				<md-icon>add</md-icon>
 			</md-button>
 
@@ -131,9 +132,12 @@
 				Vue.nextTick( () => {
 					//console.log(row, this);
 					const key = row['.key'];
-					this.$root.firebase.database().ref('orderLines/' + this.$root.currentOrder[".key"] + "/" + key).update({
-						"price": parseFloat(row.price)
-					});
+					console.log("setPrice", this.$root.currentOrder[".key"], key, row)
+//					if (row.price !== "") {
+						this.$root.firebase.database().ref('orderLines/' + this.$root.currentOrder[".key"] + "/" + key).update({
+							"price": row.price
+						});
+//					}
 				});
 			}
 		}
@@ -177,5 +181,9 @@
 
 	.multiply {
 		margin-left: 2px;
+	}
+
+	.md-table-row.disabled {
+		opacity: 0.3;
 	}
 </style>

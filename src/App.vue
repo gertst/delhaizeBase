@@ -26,7 +26,7 @@
 				</div>
 			</md-toolbar>
 
-			<md-stepper @click.native="stepClick(this)" ref="stepper" v-show="$root.currentOrder && $root.user.displayName === $root.currentOrder.paidBy">
+			<md-stepper @click.native="stepClick(this)" ref="stepper" v-show="$root.user && $root.user.displayName === $root.currentOrder.paidBy">
 				<md-step v-for="step in stepData"
 						 :key="step.label"
 						 :md-label="step.label"
@@ -64,13 +64,13 @@
 		            v-show="$root.currentOrder.state == 'settle'">
 
 			<span style="flex: 1"></span>
-			<span>{{$root.currentOrder && $root.currentOrder.settled ? 'Payment Settled' : 'Unfinished payment.'}}</span>
+			<span>{{$root.currentOrder.settled ? 'Payment Settled' : 'Unfinished payment.'}}</span>
 
-			<md-button class="md-icon-button" v-show="$root.currentOrder && $root.user.displayName === $root.currentOrder.paidBy">
-				<md-icon @click.native="switchSettle()">{{ $root.currentOrder && $root.currentOrder.settled ? 'lock_closed' : 'lock_open' }}</md-icon>
+			<md-button class="md-icon-button" v-show="$root.user.displayName === $root.currentOrder.paidBy">
+				<md-icon @click.native="switchSettle()">{{ $root.currentOrder.settled ? 'lock_closed' : 'lock_open' }}</md-icon>
 			</md-button>
-			<md-icon v-show="$root.currentOrder && $root.user.displayName !== $root.currentOrder.paidBy">
-				{{ $root.currentOrder && $root.currentOrder.settled ? 'lock_closed' : 'lock_open' }}
+			<md-icon v-show="$root.user.displayName !== $root.currentOrder.paidBy">
+				{{ $root.currentOrder.settled ? 'lock_closed' : 'lock_open' }}
 			</md-icon>
 
 		</md-toolbar>
@@ -121,11 +121,11 @@
 
 		computed: {
 			getCurrentOrderUserPhotoURL() {
-				return this.$root.currentOrder && this.$root.currentOrder.paidByPhotoURL ? this.$root.currentOrder.paidByPhotoURL.split("/photo.jpg").join("/s64-c/photo.jpg") : "static/img/user.png"
+				return this.$root.currentOrder.paidByPhotoURL ? this.$root.currentOrder.paidByPhotoURL.split("/photo.jpg").join("/s64-c/photo.jpg") : "static/img/user.png"
 			},
 
 			orderDayRelative() {
-				if (this.$root.currentOrder) {
+				if (this.$root.currentOrder[".key"]) {
 					const today = moment().format("YYYY-MM-DD");
 					if (moment(this.$root.currentOrder[".key"]).format("YYYY-MM-DD") === today) {
 						return "today";
@@ -139,14 +139,10 @@
 
 			getTitle() {
 				console.log("getTitle", this.$root.currentOrder);
-				if (this.$root.currentOrder !== null) {
-					if (this.$root.currentOrder.paidBy) {
-						return this.$root.currentOrder.paidBy;
-					} else {
-						return "No shopper yet";
-					}
+				if (this.$root.currentOrder.paidBy) {
+					return this.$root.currentOrder.paidBy;
 				} else {
-					return "DelhaizeBase"
+					return "No shopper yet";
 				}
 			},
 
@@ -174,33 +170,106 @@
 			},
 
 			stepClick() {
-				const stepId = this.stepData[this.$refs.stepper.activeStepNumber].id
-				console.log("step", stepId);
-				this.$root.firebase.database().ref("orders/" + this.$root.currentOrder[".key"]).update(
-					{
-						state: stepId
-					}
-				);
+				if (this.$refs.stepper && this.$refs.stepper.activeStepNumber !== undefined) {
+					const stepId = this.stepData[this.$refs.stepper.activeStepNumber].id
+//					console.log("step", stepId);
+					this.$root.firebase.database().ref("orders/" + this.$root.currentOrder[".key"]).update(
+						{
+							state: stepId
+						}
+					);
+				}
 			},
 
 			onAvatarClicked() {
 				console.log("avatar");
 			},
 
-			isActiveStep(stepId) {
-				console.log("getActiveStepNumber", stepId);
-				return this.$root.currentOrder ? this.$root.currentOrder.state === stepId : false;
+			isActiveStep(stepName) {
+				//console.log("**********getActiveStepNumber", stepName);
+				return this.$root.currentOrder.state ? this.$root.currentOrder.state === stepName : false;
 			},
 
 			switchSettle() {
+				console.log("switchSettle");
 				this.$root.firebase.database().ref("orders/" + this.$root.currentOrder[".key"]).update(
 					{
 						settled: !this.$root.currentOrder.settled
 					}
-				);
+				).then(() => {
+					this.updatesettlement();
+				});
+			},
+
+			updatesettlement() {
+				console.log("updatesettlement");
+				let cost = 0;
+				let settlement = this.$root.currentOrder.settlement;
+				if (!settlement) {
+					settlement = {};
+				}
+				if (!settlement[this.$root.currentOrder.paidBy]) {
+					settlement[this.$root.currentOrder.paidBy] = 0;
+				}
+				if (this.$root.currentOrder.settled) {
+					this.$root.firebase.database().ref('orderLines/' + this.$root.currentOrder[".key"]).on('value', (snapshot) => {
+						Object.values(snapshot.val()).forEach((orderLine) => {
+							if (orderLine.price && orderLine.checked) {
+								cost += (orderLine.price * orderLine.qty);
+								console.log("orderLine:", orderLine, cost);
+								if (!settlement[orderLine.user]) {
+									settlement[orderLine.user] = 0;
+								}
+								if (orderLine.user !== this.$root.currentOrder.paidBy) {
+									settlement[orderLine.user] -= (orderLine.price * orderLine.qty);
+									settlement[this.$root.currentOrder.paidBy] += (orderLine.price * orderLine.qty);
+								}
+
+							}
+						});
+						let updates = {};
+
+						//update order
+						updates['orders/' + this.$root.currentOrder[".key"] + "/settlement"] = settlement;
+
+						//update debet of users
+						Object.keys(settlement).forEach(user => {
+							updates['users/' + user + "/debet"] = {amount: this.getUserDebet(user) + settlement[user]};
+						});
+
+						this.$root.firebase.database().ref().update(updates).then(() => {
+							this.$root.firebase.database().ref('orderLines/' + this.$root.currentOrder[".key"]).off('value');
+						});
+					});
+					//settlement = orderLines;
+				} else {
+
+					let updates = {};
+
+					//update order: remove settlement
+					updates['orders/' + this.$root.currentOrder[".key"] + "/settlement"] = {};
+
+					//update debet of users
+					Object.keys(settlement).forEach(user => {
+						updates['users/' + user + "/debet"] = {amount: this.getUserDebet(user) - settlement[user]};
+					});
+					console.log("updates", settlement, updates);
+
+					this.$root.firebase.database().ref().update(updates);
+				}
+
+				//console.log("cost", cost);
+			},
+
+			getUserDebet(user) {
+				let debet = this.$root.shopperList.find(shopper => {
+					return shopper.userName === user
+				}).debet;
+				if (!debet) debet = {amount:0};
+				return debet.amount;
 			}
 
-		},
+	},
 
 		mounted() {
 			Vue.material.registerTheme('default', {
