@@ -8,6 +8,7 @@ import firebase from "firebase";
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import moment from "moment";
+import numeral from "numeral";
 
 
 Vue.use(Vuefire);
@@ -29,7 +30,8 @@ new Vue({
 		currentOrderLines: null,
 		departments: [],
 		shopperList: [],
-		user: {}
+		user: {},
+		allowUserAccess: false
 	},
 	created() {
 		// Initialize Firebase
@@ -44,11 +46,31 @@ new Vue({
 
 		firebase.initializeApp(config);
 		this.firebase = firebase;
+
+		numeral.register('locale', 'nl', {
+			delimiters: {
+				thousands: '.',
+				decimal: ','
+			},
+			abbreviations: {
+				thousand: 'k',
+				million: 'm',
+				billion: 'b',
+				trillion: 't'
+			},
+			currency: {
+				symbol: '€'
+			}
+		});
+
+// switch between locales
+		numeral.locale('nl');
+
+		numeral.defaultFormat('€0,0.00');
+
 	},
 	mounted() {
-		//open today
-		const dateString = moment().format("YYYY-MM-DD");
-		this.openOrder(dateString);
+
 
 
 		//get departments
@@ -71,6 +93,17 @@ new Vue({
 				if (!b.debet) b.debet = {amount: 0};
 				return a.debet.amount - b.debet.amount;
 			});
+
+			//current user is a shopper? => allow access
+			if (this.shopperList.find(shopper => { return this.$root.user.displayName === shopper.userName })) {
+				this.allowUserAccess = true;
+				//open today
+				const dateString = moment().format("YYYY-MM-DD");
+				this.openOrder(dateString);
+			} else {
+				this.allowUserAccess = false;
+				console.log("No access: current user is not isShopper.")
+			}
 		});
 
 

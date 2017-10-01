@@ -1,8 +1,9 @@
 <template>
 	<div class="app-viewport" id="file-list">
-		<sideBar></sideBar>
 
-		<md-whiteframe md-elevation="3" class="main-toolbar">
+		<sideBar v-if="$root.allowUserAccess"></sideBar>
+
+		<md-whiteframe md-elevation="3" class="main-toolbar" v-if="$root.allowUserAccess">
 			<md-toolbar class="md-dense">
 				<div class="md-toolbar-container">
 					<md-button class="md-icon-button" @click="$root.$emit('sideBarToggle')">
@@ -26,8 +27,9 @@
 				</div>
 			</md-toolbar>
 
-			<md-stepper @click.native="stepClick(this)" ref="stepper" v-show="$root.user && $root.user.displayName === $root.currentOrder.paidBy">
+			<md-stepper @click.native="stepClick(this)" v-cloak ref="stepper" v-show="$root.user && $root.user.displayName === $root.currentOrder.paidBy">
 				<md-step v-for="step in stepData"
+				         v-show="$root.user && $root.user.displayName === $root.currentOrder.paidBy"
 						 :key="step.label"
 						 :md-label="step.label"
 						 :md-disabled="step.disabled"
@@ -37,7 +39,7 @@
 			</md-stepper>
 		</md-whiteframe>
 
-		<main class="main-content">
+		<main class="main-content" v-if="$root.allowUserAccess">
 
 
 			<groceriesView v-if="$root.user.email"></groceriesView>
@@ -45,24 +47,33 @@
 
 		</main>
 
-		<itemCard></itemCard>
+		<itemCard v-if="$root.allowUserAccess"></itemCard>
 
-		<order-picker></order-picker>
-
-		<!--<md-boards class="onboarding-unregistered-user" :md-controls="false" v-show="isVisible">-->
-			<!--<md-board id="slide1">-->
-				<!--<h1>Welcome {{$root.user.displayName}}!</h1>-->
-				<!--<p>You're almost ready to add groceries!</p>-->
-				<!--<p>Ask your administrator to get access.</p>-->
-				<!--<md-button class="md-raised md-accent" @click.native="">-->
-					<!--Ask Access-->
-				<!--</md-button>-->
-			<!--</md-board>-->
-		<!--</md-boards>-->
+		<order-picker v-if="$root.allowUserAccess"></order-picker>
+		<transition appear name="fade" mode="out-in">
+			<md-boards v-cloak class="onboarding-unregistered-user " :md-controls="false" v-if="!$root.allowUserAccess">
+				<md-board id="slide1" class="md-accent">
+					<h1>Welcome</h1>
+					<h1>{{$root.user.displayName}}</h1>
+					<md-icon class="md-size-4x">local_grocery_store</md-icon>
+					<h3>You're almost ready to add groceries.</h3>
+					<transition appear name="fade">
+					<ol v-show="showOnboardingDelayed">
+						<li>Ask your administrator to get access</li>
+						<li>Refresh this app</li>
+					</ol>
+					</transition>
+					<!--<md-button class="md-raised md-accent" @click.native="">-->
+						<!--Ask Access-->
+					<!--</md-button>-->
+				</md-board>
+			</md-boards>
+		</transition>
 
 		<md-toolbar class="md-dense bottom-bar"
 		            v-show="$root.currentOrder.state == 'settle'">
 
+			<span>Total: €{{ getCurrentOrderTotal }}</span>
 			<span style="flex: 1"></span>
 			<span>{{$root.currentOrder.settled ? 'Payment Settled' : 'Unfinished payment.'}}</span>
 
@@ -93,6 +104,7 @@
 	import ItemCard from "./components/ItemCard.vue";
 	import OrderPicker from "./components/OrderPicker.vue";
 	import moment from "moment";
+	import numeral from "numeral";
 
 	Vue.use(VueMaterial)
 
@@ -114,7 +126,8 @@
 					{label:"Order", id: "order", disabled: false, icon:"shopping_basket", active: false},
 					{label:"Shop", id: "shop", disabled: true, icon:"shopping_cart", active: false},
 					{label:"Settle", id: "settle", disabled: true, icon:"attach_money", active: false}
-				]
+				],
+				showOnboardingDelayed: false
 			}
 		},
 
@@ -155,7 +168,23 @@
 					stepData[1].disabled = this.$root.currentOrderLines.length === 0
 					stepData[2].disabled = this.$root.currentOrderLines.length === 0
 				}
+				stepData[0].disabled = this.$root.currentOrder.settled;
+				stepData[1].disabled = this.$root.currentOrder.settled;
+				stepData[2].disabled = this.$root.currentOrder.settled;
 				return stepData
+			},
+
+			getCurrentOrderTotal() {
+				let total = 0;
+				if (this.$root.currentOrderLines) {
+					console.log("getCurrentOrderTotal", this.$root.currentOrderLines);
+					this.$root.currentOrderLines.forEach(orderLine => {
+						if (orderLine.checked) {
+							total += orderLine.qty * orderLine.price;
+						}
+					});
+				}
+				return numeral(total).format();
 			}
 
 		},
@@ -170,7 +199,7 @@
 			},
 
 			stepClick() {
-				if (this.$refs.stepper && this.$refs.stepper.activeStepNumber !== undefined) {
+				if (this.$refs.stepper && this.$refs.stepper.activeStepNumber !== undefined && !this.stepData[this.$refs.stepper.activeStepNumber].disabled) {
 					const stepId = this.stepData[this.$refs.stepper.activeStepNumber].id
 //					console.log("step", stepId);
 					this.$root.firebase.database().ref("orders/" + this.$root.currentOrder[".key"]).update(
@@ -179,10 +208,6 @@
 						}
 					);
 				}
-			},
-
-			onAvatarClicked() {
-				console.log("avatar");
 			},
 
 			isActiveStep(stepName) {
@@ -273,7 +298,7 @@
 
 		mounted() {
 			Vue.material.registerTheme('default', {
-				primary: 'blue',
+				primary: 'indigo',
 				accent: 'pink',
 				warn: 'red',
 				background: 'white'
@@ -301,6 +326,9 @@
 						const isShopper = snapshot.val().isShopper;
 						console.log("user profile", snapshot.val());
 						if (!isShopper) {
+							setTimeout(() => {
+								this.showOnboardingDelayed = true;
+							}, 3000);
 
 						}
 					});
@@ -372,12 +400,18 @@
 	}
 
 	.onboarding-unregistered-user {
-		background-color: white;
+		background-color: #e91f63;
 		z-index: 20;
 		width: 100%;
 		height: 100%;
 		position: fixed;
 		padding: 0 0px;
+		text-align: center;
+	}
+
+	.onboarding-unregistered-user .md-icon {
+		color: white;
+		opacity: 0.8;
 	}
 
 	.bottom-bar {

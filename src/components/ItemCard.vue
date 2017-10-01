@@ -28,17 +28,7 @@
 
 		</md-toolbar>
 
-		<md-card id="item-card-panel" class="item-card dark-muted">
-
-			<md-card-media class="item-image" :style="imageStyle(innerHeight)">
-				<md-button class="md-icon-button add-image" @click.native="">
-					<md-icon>add_a_photo</md-icon>
-				</md-button>
-				<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg"
-				     id="product-image"
-				     alt="">
-			</md-card-media>
-
+		<md-card id="item-card-panel" class="item-card">
 
 			<md-card-content>
 				<label for="department">Department</label>
@@ -79,6 +69,16 @@
 				</md-button>
 			</div>
 
+			<md-card-media class="item-image">
+				<md-button class="md-icon-button add-image" @click.native="">
+					<md-icon>add_a_photo</md-icon>
+				</md-button>
+				<img src="http://del.h-cdn.co/assets/17/03/980x490/landscape-1484949428-gettyimages-185201379.jpg"
+				     id="product-image"
+				     alt="">
+			</md-card-media>
+
+
 		</md-card>
 	</md-whiteframe>
 
@@ -90,7 +90,7 @@
 	import MdInput from "../../node_modules/vue-material/src/components/mdInputContainer/mdInput.vue";
 	import vSelect from "vue-select"
 	import {snapshotToArray} from "../utils/firebaseUtils";
-	import * as Vibrant from 'node-vibrant'
+//	import * as Vibrant from 'node-vibrant'
 
 	export default {
 
@@ -141,7 +141,7 @@
 				this.isVisible = true;
 				this.showNewDepartment = false;
 
-				this.grabImageColors();
+				//this.grabImageColors();
 
 			});
 			window.addEventListener('resize', this.handleResize)
@@ -149,17 +149,17 @@
 		},
 		beforeDestroy() {
 			window.removeEventListener('resize', this.handleResize)
-			if (img) {
-				img.removeEventListener('load', () => this.grabImageColors);
-			}
+//			if (img) {
+//				img.removeEventListener('load', () => this.grabImageColors);
+//			}
 		},
 		computed: {
 
 		},
 		methods: {
-			imageStyle(innerHeight) {
-				return "max-height:" + (innerHeight - 530) + "px"
-			},
+//			imageStyle(innerHeight) {
+//				return "max-height:" + (innerHeight - 530) + "px"
+//			},
 
 			onChangeDepartment(val) {
 				if (this.department !== val) {
@@ -252,51 +252,34 @@
 			handleResize() {
 				this.innerHeight = window.innerHeight;
 				//console.log("innerh:", this.innerHeight)
-			},
-			grabImageColors() {
-
-				console.log("grabImageColors");
-
-				var img = document.getElementById("product-image");
-
-				Vibrant.from(img.src).getPalette(function(err, swatches) {
-					if (err) throw err;
-					console.log(swatches);
-
-					if (swatches.DarkMuted) {
-						document.getElementById("item-card-panel").style.backgroundColor = swatches.DarkMuted.getHex();
-						var style = document.createElement('style');
-						style.type = 'text/css';
-						style.innerHTML = '.dark-muted { background-color:' + swatches.DarkMuted.getHex() + ' !important; }';
-					}
-
-					if (swatches.LightVibrant) {
-						document.getElementById("item-card-panel").style.color = swatches.LightVibrant.getHex();
-					}
-
-					if (swatches.DarkVibrant) {
-						//console.log(document.getElementsByClassName("dropdown-menu"));
-					}
-
-
-//					for (var key in swatches) {
-//						var swatch = swatches[key];
-//						if (swatch) {
-//							var hex = swatch.getHex();
-//							console.log(key + ": " + hex);
-//							//document.getElementById("item-card-panel").style.backgroundColor = hex;
-//						}
-//					}
-				});
-
-//				let vibrant = new Vibrant(img.src);
-//				let swatches = vibrant.swatches();
-//				for (let swatch in swatches) {
-//					if (swatches.hasOwnProperty(swatch) && swatches[swatch]) {
-//						console.log(swatch, swatches[swatch].getHex());
-//					}
-//				}
 			}
+
+//			grabImageColors() {
+//
+//				console.log("grabImageColors");
+//
+//				var img = document.getElementById("product-image");
+//
+//				Vibrant.from(img.src).getPalette(function(err, swatches) {
+//					if (err) throw err;
+//					console.log(swatches);
+//
+//					if (swatches.DarkMuted) {
+//						document.getElementById("item-card-panel").style.backgroundColor = swatches.DarkMuted.getHex();
+//						var style = document.createElement('style');
+//						style.type = 'text/css';
+//						style.innerHTML = '.dark-muted { background-color:' + swatches.DarkMuted.getHex() + ' !important; }';
+//					}
+//
+//					if (swatches.LightVibrant) {
+//						document.getElementById("item-card-panel").style.color = swatches.LightVibrant.getHex();
+//					}
+//
+//					if (swatches.DarkVibrant) {
+//						//console.log(document.getElementsByClassName("dropdown-menu"));
+//					}
+//				});
+//			}
 		}
 	}
 </script>
@@ -324,22 +307,9 @@
 		height: 100%;
 	}
 
-	.md-theme-accent {
-		background-color: #4b4b4b;
-		color: rgba(255, 255, 255, .87);
-	}
-
-
-	.dropdown-menu {
-		/*color: #000000 !important;*/
-	}
-
-	::-webkit-input-placeholder { /* Chrome */
-		color: white;
-	}
-
 	.add-image {
 		position: absolute;
+		color: white;
 	}
 
 	.add-image .md-icon {
@@ -353,13 +323,6 @@
 	.btn-holder {
 		text-align: right;
 		margin: 0 8px;
-	}
-
-	#item-card-panel {
-		transition: color 600ms linear;
-		transition: background-color 600ms linear;
-		color: white;
-		background-color: #303030;
 	}
 
 

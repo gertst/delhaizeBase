@@ -50,6 +50,7 @@
 	import {snapshotToArray} from "../utils/firebaseUtils";
 	import DatePicker from "./DatePicker.vue";
 	import moment from "moment";
+	import numeral from "numeral";
 
 	export default {
 
@@ -64,7 +65,8 @@
 				isVisible: false,
 				shopper: "",
 				activities:{},
-				settled: false
+				settled: false,
+				state: "order"
 			}
 		},
 		mounted() {
@@ -108,9 +110,13 @@
 							//console.log("shopper", snapshot.val());
 							this.shopper = snapshot.val().paidBy;
 							this.settled = snapshot.val().settled;
+							this.state = snapshot.val().state;
+							this.paidBy = snapshot.val().paidBy;
 						} else {
 							this.shopper = "";
 							this.settled = false;
+							this.state = "order";
+							this.paidBy = "";
 						}
 					});
 				}
@@ -137,19 +143,34 @@
 
 			open() {
 				console.log("open", this.shopper, this.photoURL);
-				this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).update({
+
+				let orderData = {
 					"yyyy-mm": this.orderDate.substr(0, 7),
-					"paidBy": this.shopper,
-					"paidByPhotoURL": this.photoURL,
-					"state": this.state
-				}).then(() => {
-					this.$root.$emit("OPEN_ORDER", this.orderDate.substr(0, 10));
-					this.isVisible = false;
+					paidBy: this.shopper,
+					paidByPhotoURL: this.photoURL
+				};
+
+				this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).once('value').then(freshOrderData => {
+					if (freshOrderData.state) {
+						orderData.state = freshOrderData.state;
+					} else {
+						orderData.state = "order";
+						orderData.settled = false;
+					}
+
+					console.log("orderData", orderData);
+					this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).update(orderData).then(() => {
+						this.$root.$emit("OPEN_ORDER", this.orderDate.substr(0, 10));
+						this.isVisible = false;
+					});
+					this.$root.firebase.database().ref('orders/' + this.orderDate.substr(0, 10)).off();
 				});
+
+
 			},
 			debetAmount(user) {
 				if (user.debet) {
-					return user.debet.amount;
+					return numeral(user.debet.amount).format();
 				} else {
 					return 0;
 				}
