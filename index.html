@@ -17,7 +17,7 @@
 
     <!-- Add to home screen for Android and modern mobile browsers -->
     <link rel="manifest" href="/static/manifest.json">
-    <meta name="theme-color" content="#02a8f3">
+    <meta name="theme-color" content="#3f51b5">
 
     <!-- Add to home screen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,7 +30,8 @@
     <% for (var chunk of webpack.chunks) {
         for (var file of chunk.files) {
           if (file.match(/\.(js|css)$/)) { %>
-    <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>"><% }}} %>
+    <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>"
+		  as="<%= file.match(/\.css$/)?'style':'script' %>"><% }}} %>
 
     <!--use firebase gui layout for user login-->
     <link type="text/css" rel="stylesheet" href="static/css/app.css" />

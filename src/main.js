@@ -63,9 +63,8 @@ new Vue({
 			}
 		});
 
-// switch between locales
+		//Numeral is a lib to format numbers. Typical use: numeral(myNumber).format();
 		numeral.locale('nl');
-
 		numeral.defaultFormat('€0,0.00');
 
 	},
