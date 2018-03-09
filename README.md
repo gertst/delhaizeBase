@@ -1,21 +1,14 @@
-# delhaizebase
+# delhaizeBase
 
-> A Vue.js project
+> A no money involved grocery service 
 
-## Build Setup
+1. Fill in your daily groceries
+2. The person with the most debts picks up and pays for all
+3. Debts are recalculated
+ 
 
-``` bash
-# install dependencies
-npm install
+## Used technologies
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+- Vue 2
+- Vue Material
+- FireBase
