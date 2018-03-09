@@ -27,7 +27,6 @@
 			<!--</md-menu>-->
 
 		</md-toolbar>
-
 		<md-card id="item-card-panel" class="item-card">
 
 			<md-card-content>
@@ -50,6 +49,11 @@
 				          :taggable="true"
 				          :on-change="onChangeItem">
 				</v-select>
+
+					<md-autocomplete v-model="department" :md-options="$root.departments">
+						<label>Department---</label>
+					</md-autocomplete>
+
 
 				<md-input-container>
 					<label>Qty</label>
